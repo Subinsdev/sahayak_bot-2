@@ -1,0 +1,6 @@
+<launch>
+    <arg name="rgb_camera_topic" default="/camera/color/image_raw2" />
+    <node name="find_object_2d_node" pkg="find_object_2d" type="find_object_2d" output="screen">
+        <remap from="image" to="$(arg rgb_camera_topic)"/>
+    </node>
+</launch>
