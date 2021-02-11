@@ -286,12 +286,12 @@ if __name__ == '__main__':
                 (14.700, -0.810, -0.718, 0.695), #Pantry Pickup Table 1
                 (11.233, -1.222, -0.709, -0.70), #Pantry Pickup Table 2 Position 1
                 (11.303, -0.910, -0.718, 0.696), #Pantry Pickup Table 2 Position 2
-                ( 7.062, 2.8200, 1.0000, 0.010), #Meeting DropBox
                 ( 7.999, 2.8400, 1.0000, 0.035), #Meeting Pickup
-                (11.400, 10.010, -0.018, -1.00), #Reaserch DropBox along length
-                # (10.930, 9.1800, -0.700, -0.71), #Reaserch DropBox along width
                 (26.165, -2.714, -0.891, 0.454)  #Store Pickup 1
                 (25.920, -3.064, -0.887, 0.462), #Store Pickup 2
+                ( 7.062, 2.8200, 1.0000, 0.010), #Meeting DropBox
+                (11.400, 10.010, -0.018, -1.00), #Reaserch DropBox along length
+                # (10.930, 9.1800, -0.700, -0.71), #Reaserch DropBox along width
                 ( 7.062, 2.8200, 1.0000, 0.010), #Conference DropBox
                 (0,0,0,0,0,0)]                   #Start
 
