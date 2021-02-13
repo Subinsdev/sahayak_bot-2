@@ -34,8 +34,8 @@
     <rosparam file="$(find ebot_nav)/config/global_costmap_params.yaml" command="load" />
     <rosparam file="$(find ebot_nav)/config/trajectory_planner.yaml" command="load" />
 
-    <param name="move_base/DWAPlannerROS/yaw_goal_tolerance" value="0.1"/>
-    <param name="move_base/DWAPlannerROS/xy_goal_tolerance" value="0.1"/>
+    <!-- <param name="move_base/DWAPlannerROS/xy_goal_tolerance" value="0.2"/> -->
+    <!-- <param name="move_base/DWAPlannerROS/yaw_goal_tolerance" value="0.5"/> -->
 
     </node>
 

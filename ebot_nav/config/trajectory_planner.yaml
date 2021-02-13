@@ -1,5 +1,5 @@
 TrajectoryPlannerROS:
-  max_vel_x: 1.0
+  max_vel_x: 0.9
   min_vel_x: 0.01
   max_vel_theta: 2.0
   min_vel_theta: -2.0
@@ -9,3 +9,24 @@ TrajectoryPlannerROS:
   acc_lim_y: 1.0
   holonomic_robot: false
   meter_scoring: true
+
+  vx_samples: 5                       #default is 3, I feel like putting 5. I'm the architect after all! :)
+  vtheta_samples: 20                  #default is 20
+
+  holonomic_robot: false
+
+  path_distance_bias: 0.75            #default .6
+  goal_distance_bias: 0.4             #default .8
+  occdist_scale: 0.01                 #default 0.01
+
+  heading_lookahead: 0.325            #default 0.325m
+  heading_scoring: false              #default false
+  heading_scoring_timestep: 5.0       #default 0.8 sec
+
+  sim_time: 1.0                       #default is 1.0 - simulate 5 seconds ahead
+  sim_granularity: 0.025              #default is 0.025 - simulation with steps of 2.5 cm
+
+  dwa: false                          #I prefer trajectory rollout as I can see it in rviz
+
+  xy_goal_tolerance: 0.2              #default is 10cm but I think AMCL makes it too giggly for this to be safe
+  yaw_goal_tolerance: 0.09

@@ -7,4 +7,4 @@ global_costmap:
   static_map: true
   transform_tolerance: 0.5
   cost_scaling_factor: 30
-  inflation_radius: 0.15
+  inflation_radius: 0.17

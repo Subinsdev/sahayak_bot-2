@@ -23,6 +23,7 @@ def movebase_client(g):
 
     client.send_goal(goal)
     wait = client.wait_for_result()
+    print (g);
     if not wait:
         rospy.logerr("Action server not available!")
         rospy.signal_shutdown("Action server not available!")
@@ -34,34 +35,40 @@ def run_code(msg):
     # way_points = [(7.66, 2.6, 0, 0, 0, 0), (4.924, -0.8627, 0, 0, 0, -1.56550121307399)]
     way_points = [
                 #Object 1
-                # (13.035, 0.99, -0.702, 0.711), #Pantry Intermediate
-                # (13.035, -0.1, -0.182, 0.98), #Pantry Intermediate
-                # (14.700, -0.660, -0.182, 0.98), #Pantry Pickup Table 1
-                # (14.700, -0.660, -0.718, 0.695), #Pantry Pickup Table 1
-                # (11.233, -1.222, -0.709, -0.70), #Pantry Pickup Table 2 Position 1
-                # (13.035, -0.1, 0.182, 0.98), #Pantry Intermediate
-                # (11.303, -0.910, -0.718, 0.696), #Pantry Pickup Table 2 Position 2
+                (13.035, 0.99, -0.702, 0.711), #Pantry Intermediate
+                (13.035, -0.1, -0.702, 0.711), #Pantry Intermediate
+                (13.035, -0.1, -0.182, 0.98), #Pantry Intermediate
+                (14.68, -0.511, -0.718, 0.695), #Pantry Pickup Table 1
+                (14.68, -0.511, 1, 0.0008), #Pantry Pickup Table 1
+                (11.233, -1.222, 1, 0.0008), #Pantry Pickup Table 2 Position 1
+                (11.233, -1.222, -0.709, -0.70), #Pantry Pickup Table 2 Position 1
+                (11.233, -1.222, 0.3824, 0.92395), #Pantry Pickup Table 2 Position 1 Orientation
+                (13.2159, -0.604, -0.7577, -0.650), #Pantry Out OIntermediate
+                (13.02, 0.647, -0.719, -0.694), #Pantry Out OIntermediate
+
                 ( 8.638, 1.148, 0.7063, 0.7078), #Meeting Intermediate CV
-                ( 8.638, 2.1317, 0.7063, 0.7078), #Meeting Intermediate 2 CV
-                ( 7.062, 2.6500, 1.0000, 0.010), #Meeting DropBox
-                ( 7.062, 2.650, -0.1968, 0.9804), #Meeting DropBox
-                # ( 7.062, 2.8200, -0.0158, 0.9999), #Meeting DropBox
-                # ( 7.059, 2.5970, -0.0158, 0.9999), #Meeting DropBox CV
-                #Object 2
-                ( 7.999, 2.8400, 1.0000, 0.035), #Meeting Pickup
-                # ( 7.757, 2.597, -0.1968, 0.9804), #Meeting Pickup
-                # ( 8.571, 2.175, -0.6564, 0.7543), #Meeting Intermediate out CV
-                # (11.400, 10.010, -0.018, -1.00), #Reaserch DropBox along length
-                # (10.930, 9.1800, -0.700, -0.71), #Reaserch DropBox along width
+                ( 8.62, 2.132, 0.7063, 0.7078), #Meeting Intermediate 2 CV
+                ( 6.9, 2.6, 0.00, 0.010), #Meeting DropBox
+                # #Object 2
+                ( 7.999, 2.4, 0.0, 0.007), #Meeting Pickup
+                ( 8.5, 2.175, -0.6564, 0.7543), #Meeting Intermediate out CV
+                ( 8.638, 1.148, -0.6564, 0.7543), #Meeting Intermediate CV
+
+
+                (11.400, 10.010, -0.018, -1.00), #Reaserch DropBox along length
+                (14.2346, 10.1097, -0.011123, -0.9936), #Reaserch DropBox Intermediatie
+
                 #Object3
-                # (26.165, -2.714, -0.891, 0.454),  #Store Pickup 1
-                # (25.920, -3.064, -0.887, 0.462), #Store Pickup 2
-                ( 7.062, 2.8200, 1.0000, 0.010), #Conference DropBox
-                # ( 5.156, 0.861, -0.706, 0.7082), #Conference Intermediate CV
-                # ( 5.070, -0.771, -0.9126, 0.4087), #Conference DropBox CV
-                # ( 5.070, -0.771, -0.7794, -0.625), #Conference Intermediate out CV
+                (26.165, -2.714, -0.891, 0.454),  #Store Pickup 1
+                (25.8179, -3.2344, -0.8869, 0.462), #Store Pickup 2
+                (25.8179, -3.2344, 0.894, -0.448), #Store Pickup 2 out
+                (15.5, 0.9, 1, 0.0), #Store Pickup 2 out
+                ( 5.156, 0.861, -0.706, 0.7082), #Conference Intermediate CV
+                ( 5.070, -0.771, -0.9126, 0.4087), #Conference DropBox CV
+                ( 5.070, -0.771, -0.7794, -0.625), #Conference Intermediate out CV
+                ( 5.170, 0.2, -0.7794, -0.625), #Conference Intermediate out CV
                 #
-                (0,0,0,0,0,0)]                   #Start
+                (0,0,0,1)]                   #Start
 
 
     for goal in way_points:
