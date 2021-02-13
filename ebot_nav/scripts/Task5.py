@@ -11,7 +11,7 @@ import math
 import tf
 from tf.transformations import euler_from_quaternion
 from tf.transformations import quaternion_from_euler
-
+import time
 from moveit_msgs.msg import CollisionObject, AttachedCollisionObject
 from moveit_ros_planning_interface import _moveit_planning_scene_interface
 from geometry_msgs.msg import PoseStamped, Pose, Point
@@ -211,44 +211,30 @@ def movebase_client(g):
 
 def findObjects():
     listener = tf.TransformListener()
-    coke, glue, battery,fpga = False, False, False, False
-    tran_coke1, tran_coke2, tran_glue1, tran_glue2, tran_battery2, tran_battery2, tran_fpga1, tran_fpga2 = 0, 0, 0, 0, 0, 0, 0,0
+    return_object_id = [-1]*8
+    return_object_tranform = [0]*8
     rate = rospy.Rate(10.0)
     obj_name = '/object_'
-    count=0
-    while not rospy.is_shutdown():
-        for i in range(25, 100):
-            try:
-                obj_id = obj_name + str(i)
-                (tran1, _) = listener.lookupTransform('/ebot_base', obj_id, rospy.Time(0))
-                (tran2, _) = listener.lookupTransform('/base_link', obj_id, rospy.Time(0))
-                if i==44 or i ==68 or i ==69 or i==70:
-                    tran_coke1 = tran1
-                    tran_coke2 = tran2
-                    coke = True
-                elif 34<=i<=37:
-                    tran_battery1 = tran1
-                    tran_battery2 = tran2
-                    battery = True
-                elif i ==58 or i==43 or i==64:
-                    tran_glue1 = tran1
-                    tran_glue2 = tran2
-                    glue = True
-                elif i ==55:
-                    tran_fpga1=tran1
-                    tran_fpga2=tran2
-                    fpga = True
-            except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-                continue
-        print(coke)
-        count+=1
-        print(count)
-        if coke:
-            break
-        if count>7:
-            break
+    object_ids = [[59, 71, 78], [57, 74, 76, 82], [55, 70, 73, 75, 83], [56, 41, 80], [58, 43, 64], [44, 68,70], [42, 72, 81], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
+    #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
+    start_time = time.time()
+    end_time = time.time()
+    while end_time-start_time<5:
+        for i in range(len(object_ids)):
+            for j in range(len(object_ids[i])):
+                obj_id = obj_name + str(object_ids[i][j])
+                try:
+                    (tran1, _) = listener.lookupTransform('/ebot_base', obj_id, rospy.Time(0))
+                    (tran2, _) = listener.lookupTransform('/base_link', obj_id, rospy.Time(0))
+                    return_object_id[i] = object_ids[i][j]
+                    return_object_tranform[i] = [tran1, tran2]
+                except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+                    continue
         rate.sleep()
-    return [coke, tran_coke1, tran_coke2, glue, tran_glue1, tran_glue2, fpga, tran_fpga1, tran_fpga2]
+        end_time = time.time()
+        print("Time completed: ", end_time-start_time)
+    return return_object_id, return_object_tranform
+
 
 def addObjectBox(name, position, size, tolerance, angle):
     obj = geometry_msgs.msg.PoseStamped()
@@ -282,85 +268,91 @@ def main():
     global ur5
     ur5 = Ur5Moveit()
 
-way_points = [
-            #Object 1
-            (13.035, 0.99, -0.702, 0.711), #Pantry Intermediate
-            (13.035, -0.1, -0.702, 0.711), #Pantry Intermediate
-            (13.035, -0.1, -0.182, 0.98), #Pantry Intermediate
-            (14.68, -0.511, -0.718, 0.695), #Pantry Pickup Table 1
-            (14.68, -0.511, 1, 0.0008), #Pantry Pickup Table 1
-            (11.233, -1.222, 1, 0.0008), #Pantry Pickup Table 2 Position 1
-            (11.233, -1.222, -0.709, -0.70), #Pantry Pickup Table 2 Position 1
-            (11.233, -1.222, 0.3824, 0.92395), #Pantry Pickup Table 2 Position 1 Orientation
-            (13.2159, -0.604, -0.7577, -0.650), #Pantry Out OIntermediate
-            (13.02, 0.647, -0.719, -0.694), #Pantry Out OIntermediate
+    way_points = [
+                #Object 1
+                (13.035, 0.99, -0.702, 0.711), #Pantry Intermediate outside door
+                (13.035, -0.1, -0.702, 0.711), #Pantry Intermediate inside door
+                (13.035, -0.1, -0.182, 0.98), #Pantry Intermediate inside door orientation
+                (14.608, -0.62, -0.718, 0.695), #Pantry Pickup Table 1
 
-            ( 8.638, 1.148, 0.7063, 0.7078), #Meeting Intermediate CV
-            ( 8.62, 2.132, 0.7063, 0.7078), #Meeting Intermediate 2 CV
-            ( 6.9, 2.6, 0.00, 0.010), #Meeting DropBox
-            # #Object 2
-            ( 7.999, 2.4, 0.0, 0.007), #Meeting Pickup
-            ( 8.5, 2.175, -0.6564, 0.7543), #Meeting Intermediate out CV
-            ( 8.638, 1.148, -0.6564, 0.7543), #Meeting Intermediate CV
+                (14.68, -0.53, 1, 0.0008), #Pantry Pickup Table 1 - Orientation to Table2
+                (11.25, -1.42, 1, 0.0008), #Pantry Pickup Table 2 Position 1 - Orientation
+                (11.25, -1.42, -0.709, -0.70), #Pantry Pickup Table 2 Position 1
+
+                (11.37, -1.42, 0.3824, 0.92395), #Pantry Pick.70up Table 2 Position 1 Orientation
+                (13.2159, -0.604, -0.7577, -0.650), #Pantry Out OIntermediate
+                (13.02, 0.647, -0.719, -0.694), #Pantry Out OIntermediate
+
+                ( 8.638, 1.148, 0.7063, 0.7078), #Meeting Intermediate CV
+                ( 8.62, 2.132, 0.7063, 0.7078), #Meeting Intermediate 2 CV
+                ( 6.9, 2.6, 0.00, 0.010), #Meeting DropBox
+                # #Object 2
+                ( 7.999, 2.4, 0.0, 0.007), #Meeting Pickup
+                ( 8.5, 2.175, -0.6564, 0.7543), #Meeting Intermediate out CV
+                ( 8.638, 1.148, -0.6564, 0.7543), #Meeting Intermediate CV
 
 
-            (11.400, 10.010, -0.018, -1.00), #Reaserch DropBox along length
-            (14.2346, 10.1097, -0.011123, -0.9936), #Reaserch DropBox Intermediatie
+                (11.400, 10.010, -0.018, -1.00), #Reaserch DropBox along length
+                (14.2346, 10.1097, -0.011123, -0.9936), #Reaserch DropBox Intermediatie
 
-            #Object3
-            (26.165, -2.714, -0.891, 0.454),  #Store Pickup 1
-            (25.8179, -3.2344, -0.8869, 0.462), #Store Pickup 2
-            (25.8179, -3.2344, 0.894, -0.448), #Store Pickup 2 out
-            (15.5, 0.9, 1, 0.0), #Store Pickup 2 out
-            ( 5.156, 0.861, -0.706, 0.7082), #Conference Intermediate CV
-            ( 5.070, -0.771, -0.9126, 0.4087), #Conference DropBox CV
-            ( 5.070, -0.771, -0.7794, -0.625), #Conference Intermediate out CV
-            ( 5.170, 0.2, -0.7794, -0.625), #Conference Intermediate out CV
-            #
-            (0,0,0,1)]                   #Start
+                #Object3
+                (26.165, -2.714, -0.891, 0.454),  #Store Pickup 1
+                (25.8179, -3.2344, -0.8869, 0.462), #Store Pickup 2
+                (25.8179, -3.2344, 0.894, -0.448), #Store Pickup 2 out
+                (15.5, 0.9, 1, 0.0), #Store Pickup 2 out
+                ( 5.156, 0.861, -0.706, 0.7082), #Conference Intermediate CV
+                ( 5.070, -0.771, -0.9126, 0.4087), #Conference DropBox CV
+                ( 5.070, -0.771, -0.7794, -0.625), #Conference Intermediate out CV
+                ( 5.170, 0.2, -0.7794, -0.625), #Conference Intermediate out CV
+                #
+                (0,0,0,1)]                   #Start
 
     lst_joint_angles_1 = [-0.4, 0.74, 0.31, -0.02, -0.96, -0.02] #[0, 1.08, 0.37, 0, 0, 0]
 
     #going to the crouch position
-    while not rospy.is_shutdown():
-        f = ur5.go_to_joint(lst_joint_angles_1)
-        if f:
-            obj = Pose()
-            pub1.publish(obj)
-            break
-        rospy.sleep(2)
+    # while not rospy.is_shutdown():
+    f = ur5.go_to_joint(lst_joint_angles_1)
+        # if f:
+        #     # obj = Pose()
+        #     # pub1.publish(obj)
+        #     break
+        # rospy.sleep(2)
     print("Success")
 
-    movebase_client(goal) #going to goal locations
+    # Moving to Table 1
+    for i in range(4):
+        movebase_client(way_points[i]) #going to goal locations
 
-    #coke table left up position
-    state=[-0.05, -0.37, -0.785, -1, -0.8, 1.57]
+    # coke table left up position
+    state=[0.0, 0.0, 0.0, 0, 0, 0]
     ur5.go_to_joint(state)
 
-    objects = findObjects()
-    print(objects)
+    #Finding Coke
+    # object_ids, object_tranforms  = findObjects()
+    # print(object_ids)
+    #
+    states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57], [-0.2, -0.37, -0.785, -1, -0.8, 1.57]]
 
-
-    #for the the pantry first table
-    if not objects[0]:
-        state=[-0.2, -0.37, -0.785, -1, -0.8, 1.57]
-        ur5.go_to_joint(state)
-
-        objects = findObjects()
-        print(objects)
-    #need to add an if condition
-    if(objects[0]):
-        while not rospy.is_shutdown():
-            x=float(input("enter x"))
-            y=float(input("enter y"))
-            z=float(input("enter z"))
-            exit=int(input("enter exit variable"))
-            print(x,y,z)
-            print("Going to top of coke")
+    for i in range(len(states)):
+        ur5.go_to_joint(states[i])
+        object_ids, object_tranforms  = findObjects()
+        print(object_ids)
+        print(object_tranforms)
+        print("Adding deteced objects in rviz")
+        # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+        print("Done")
+        if object_ids[5]!=-1:
+            print("Found object_", object_ids[5])
             ur5_pose_1 = geometry_msgs.msg.Pose()
-            ur5_pose_1.position.x = objects[1][0] + x #+0.005
-            ur5_pose_1.position.y = objects[1][1] + y #-0.18
-            ur5_pose_1.position.z = objects[1][2] + z #+0.2
+            trans = object_tranforms[5][0]
+            if(i == 0):
+                x, y, z = 0.005, -0.8, 0.2
+            elif(i == 1):
+                x, y, z = 0.005, -0.18, 0.22
+
+            ur5_pose_1.position.x = trans[0]+x
+            ur5_pose_1.position.y = trans[1]+y
+            ur5_pose_1.position.z = trans[2]+z
             angles = quaternion_from_euler(3.8, 0, -3.14)
             ur5_pose_1.orientation.x = angles[0]
             ur5_pose_1.orientation.y = angles[1]
@@ -368,39 +360,41 @@ way_points = [
             ur5_pose_1.orientation.w = angles[3]
             ur5.go_to_pose(ur5_pose_1)
 
-            ur5_pose_1.position.z = objects[1][2]+0.16
-            ur5.go_to_pose(ur5_pose_1)
+            ur5.closeGripper(0.15)
+            ur5.go_to_joint(states[i])
+            break
 
-            print("Closing gripper")
-            ur5.closeGripper(0.22)
+    ur5.go_to_joint(lst_joint_angles_1)
+    movebase_client(way_points[4])
 
-            # ur5_pose_1.position.z = objects[1][2]+0.2
-            # ur5.go_to_pose(ur5_pose_1)
-
-            # print("Opening gripper")
-            # ur5.openGripper()
-            if exit == 1:
-                    break
-
-    if not objects[0]:
-        state=[-0.2, -0.37, -0.785, -1, -0.8, 1.57]
+    if object_ids[5] == -1:
+        movebase_client(way_points[5])
+        movebase_client(way_points[6])
+        state=[0.0, 0.0, 0.0, 0, 0, 0]
         ur5.go_to_joint(state)
 
-        objects = findObjects()
-        print(objects)
+        states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57], [-0.2, -0.37, -0.785, -1, -0.8, 1.57]]
 
-        if(objects[0]):
-            while not rospy.is_shutdown():
-                x=float(input("enter x"))
-                y=float(input("enter y"))
-                z=float(input("enter z"))
-                exit=int(input("enter exit variable"))
-                print(x,y,z)
-                print("Going to top of coke")
+        for i in range(len(states)):
+            ur5.go_to_joint(states[i])
+            object_ids, object_tranforms  = findObjects()
+            print(object_ids)
+            print(object_tranforms)
+            print("Adding deteced objects in rviz")
+            # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+            print("Done")
+            if object_ids[5]!=-1:
+                print("Found object_", object_ids[5])
                 ur5_pose_1 = geometry_msgs.msg.Pose()
-                ur5_pose_1.position.x = objects[1][0] + x
-                ur5_pose_1.position.y = objects[1][1] + y
-                ur5_pose_1.position.z = objects[1][2] + z
+                trans = object_tranforms[5][0]
+                if(i == 0):
+                    x, y, z = 0.005, -0.8, 0.2
+                elif(i == 1):
+                    x, y, z = 0.005, -0.18, 0.22
+
+                ur5_pose_1.position.x = trans[0]+x
+                ur5_pose_1.position.y = trans[1]+y
+                ur5_pose_1.position.z = trans[2]+z
                 angles = quaternion_from_euler(3.8, 0, -3.14)
                 ur5_pose_1.orientation.x = angles[0]
                 ur5_pose_1.orientation.y = angles[1]
@@ -408,61 +402,137 @@ way_points = [
                 ur5_pose_1.orientation.w = angles[3]
                 ur5.go_to_pose(ur5_pose_1)
 
-                ur5_pose_1.position.z = objects[1][2]+0.16
-                ur5.go_to_pose(ur5_pose_1)
+                ur5.closeGripper(0.15)
+                ur5.go_to_joint(states[i])
+                break
 
-                print("Closing gripper")
-                ur5.closeGripper(0.25)
+    ur5.go_to_joint(lst_joint_angles_1)
 
-                # ur5_pose_1.position.z = objects[1][2]+0.2
-                # ur5.go_to_pose(ur5_pose_1)
+    for i in range(7,13):
+        movebase_client(way_points[i])
 
-                # print("Opening gripper")
-                ur5.openGripper()
-                if exit == 1:
-                    break
-        else:
-            movebase_client(goal)
-
-    # state for the glue
-    state=[0, -0.37, -0.785, -1, -0.52, 1.57] #top state
-    ur5.go_to_joint(state)
-
-    # # rospy.sleep(10.0)
-
-    state=[0, -0.37, -0.785, -1, -0.7, 1.57] #look down
-    ur5.go_to_joint(state)
-
-    #state for coke 1st table
-    # state=[-0.48, -0.96, 0.2, -1.19, -0.3, 1.47] #look down
+    # #for the the pantry first table
+    # if objects_ids[5]  == -1:
+    #     state=[-0.2, -0.37, -0.785, -1, -0.8, 1.57]
+    #     ur5.go_to_joint(state)
+    #
+    #     object_ids, object_tranforms  = findObjects()
+    # #need to add an if condition
+    #
+    # if(objects[0]):
+    #     while not rospy.is_shutdown():
+    #         x=float(input("enter x"))
+    #         y=float(input("enter y"))
+    #         z=float(input("enter z"))
+    #         exit=int(input("enter exit variable"))
+    #         print(x,y,z)
+    #         print("Going to top of coke")
+    #         ur5_pose_1 = geometry_msgs.msg.Pose()
+    #         ur5_pose_1.position.x = objects[1][0] + x #+0.005
+    #         ur5_pose_1.position.y = objects[1][1] + y #-0.18
+    #         ur5_pose_1.position.z = objects[1][2] + z #+0.2
+    #         angles = quaternion_from_euler(3.8, 0, -3.14)
+    #         ur5_pose_1.orientation.x = angles[0]
+    #         ur5_pose_1.orientation.y = angles[1]
+    #         ur5_pose_1.orientation.z = angles[2]
+    #         ur5_pose_1.orientation.w = angles[3]
+    #         ur5.go_to_pose(ur5_pose_1)
+    #
+    #         ur5_pose_1.position.z = objects[1][2]+0.16
+    #         ur5.go_to_pose(ur5_pose_1)
+    #
+    #         print("Closing gripper")
+    #         ur5.closeGripper(0.22)
+    #
+    #         # ur5_pose_1.position.z = objects[1][2]+0.2
+    #         # ur5.go_to_pose(ur5_pose_1)
+    #
+    #         # print("Opening gripper")
+    #         # ur5.openGripper()
+    #         if exit == 1:
+    #                 break
+    #
+    # if not objects[0]:
+    #     state=[-0.2, -0.37, -0.785, -1, -0.8, 1.57]
+    #     ur5.go_to_joint(state)
+    #
+    #     objects = findObjects()
+    #     print(objects)
+    #
+    #     if(objects[0]):
+    #         while not rospy.is_shutdown():
+    #             x=float(input("enter x"))
+    #             y=float(input("enter y"))
+    #             z=float(input("enter z"))
+    #             exit=int(input("enter exit variable"))
+    #             print(x,y,z)
+    #             print("Going to top of coke")
+    #             ur5_pose_1 = geometry_msgs.msg.Pose()
+    #             ur5_pose_1.position.x = objects[1][0] + x
+    #             ur5_pose_1.position.y = objects[1][1] + y
+    #             ur5_pose_1.position.z = objects[1][2] + z
+    #             angles = quaternion_from_euler(3.8, 0, -3.14)
+    #             ur5_pose_1.orientation.x = angles[0]
+    #             ur5_pose_1.orientation.y = angles[1]
+    #             ur5_pose_1.orientation.z = angles[2]
+    #             ur5_pose_1.orientation.w = angles[3]
+    #             ur5.go_to_pose(ur5_pose_1)
+    #
+    #             ur5_pose_1.position.z = objects[1][2]+0.16
+    #             ur5.go_to_pose(ur5_pose_1)
+    #
+    #             print("Closing gripper")
+    #             ur5.closeGripper(0.25)
+    #
+    #             # ur5_pose_1.position.z = objects[1][2]+0.2
+    #             # ur5.go_to_pose(ur5_pose_1)
+    #
+    #             # print("Opening gripper")
+    #             ur5.openGripper()
+    #             if exit == 1:
+    #                 break
+    #     else:
+    #         movebase_client(goal)
+    #
+    # # state for the glue
+    # state=[0, -0.37, -0.785, -1, -0.52, 1.57] #top state
     # ur5.go_to_joint(state)
-
-    state=[-0.05, -0.37, -0.785, -1, -0.8, 1.57]
-    ur5.go_to_joint(state)
-
-    objects = findObjects()
-    print(objects)
-
-    print("Going to top of glue")
-    ur5_pose_1 = geometry_msgs.msg.Pose()
-    if(objects[3]):
-        ur5_pose_1.position.x = objects[4][0] - 0.0022
-        ur5_pose_1.position.y =objects[4][1] - 0.19
-        ur5_pose_1.position.z = objects[4][2] + 0.2
-        angles = quaternion_from_euler(3.68, 0, -3.14)
-        ur5_pose_1.orientation.x = angles[0]
-        ur5_pose_1.orientation.y = angles[1]
-        ur5_pose_1.orientation.z = angles[2]
-        ur5_pose_1.orientation.w = angles[3]
-
-        ur5.go_to_pose(ur5_pose_1)
-
-        print("Going to glue")
-        ur5_pose_1.position.z = objects[4][2]+ 0.125
-        ur5.go_to_pose(ur5_pose_1)
-
-        print("Closing gripper")
-        ur5.closeGripper(0.31)
+    #
+    # # # rospy.sleep(10.0)
+    #
+    # state=[0, -0.37, -0.785, -1, -0.7, 1.57] #look down
+    # ur5.go_to_joint(state)
+    #
+    # #state for coke 1st table
+    # # state=[-0.48, -0.96, 0.2, -1.19, -0.3, 1.47] #look down
+    # # ur5.go_to_joint(state)
+    #
+    # state=[-0.05, -0.37, -0.785, -1, -0.8, 1.57]
+    # ur5.go_to_joint(state)
+    #
+    # objects = findObjects()
+    # print(objects)
+    #
+    # print("Going to top of glue")
+    # ur5_pose_1 = geometry_msgs.msg.Pose()
+    # if(objects[3]):
+    #     ur5_pose_1.position.x = objects[4][0] - 0.0022
+    #     ur5_pose_1.position.y =objects[4][1] - 0.19
+    #     ur5_pose_1.position.z = objects[4][2] + 0.2
+    #     angles = quaternion_from_euler(3.68, 0, -3.14)
+    #     ur5_pose_1.orientation.x = angles[0]
+    #     ur5_pose_1.orientation.y = angles[1]
+    #     ur5_pose_1.orientation.z = angles[2]
+    #     ur5_pose_1.orientation.w = angles[3]
+    #
+    #     ur5.go_to_pose(ur5_pose_1)
+    #
+    #     print("Going to glue")
+    #     ur5_pose_1.position.z = objects[4][2]+ 0.125
+    #     ur5.go_to_pose(ur5_pose_1)
+    #
+    #     print("Closing gripper")
+    #     ur5.closeGripper(0.31)
     '''
     coke_pos, glue_pos, battery_pos, coke_pos1, glue_pos1, battery_pos1 = findObjects()
     print("coke", coke_pos)
