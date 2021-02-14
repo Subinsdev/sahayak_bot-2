@@ -304,8 +304,8 @@ def main():
                 (14.695, -0.75, -0.718, 0.695), #Pantry Pickup Table 1
 
                 (14.615, -0.62, 1, 0.0008), #Pantry Pickup Table 1 - Orientation to Table2
-                (11.35, -1.42, 1, 0.0008), #Pantry Pickup Table 2 Position 1 - Orientation
-                (11.25, -1.42, -0.709, -0.70), #Pantry Pickup Table 2 Position 1
+                (11.35, -1.32, 1, 0.0008), #Pantry Pickup Table 2 Position 1 - Orientation
+                (11.15, -1.32, -0.709, -0.70), #Pantry Pickup Table 2 Position 1
 
                 (11.37, -1.42, 0.3824, 0.92395), #Pantry Pick.70up Table 2 Position 1 Orientation
                 (13.2159, -0.604, -0.7577, -0.650), #Pantry Out OIntermediate
@@ -370,11 +370,11 @@ def main():
         add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
         print("Done")
         z=0
-        if object_ids[6]!=-1:
+        if object_ids[5]!=-1:
             while not rospy.is_shutdown():
-                print("Found object_", object_ids[6])
+                print("Found object_", object_ids[5])
                 ur5_pose_1 = geometry_msgs.msg.Pose()
-                trans = object_tranforms[6][0]
+                trans = object_tranforms[5][0]
                 if(i == 0):
                     x, y, z = 0.005, -0.18, 0.22
                 elif(i == 1):
@@ -405,13 +405,13 @@ def main():
     ur5.go_to_joint(lst_joint_angles_1)
     movebase_client(way_points[5])
 
-    if object_ids[6] == -1:
+    if object_ids[5] == -1:
         movebase_client(way_points[6])
         movebase_client(way_points[7])
         state=[-0.4, 0.0, 0.0, 0, 0, 0]
         ur5.go_to_joint(state)
 
-        states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57], [-0.2, -0.37, -0.785, -1, -0.8, 1.57]]
+        states=[[-0.07, -0.37, -0.785, -1, -0.8, 1.57], [-0.2, -0.37, -0.785, -1, -0.8, 1.57]]
 
         for i in range(len(states)):
             ur5.go_to_joint(states[i])
@@ -422,7 +422,7 @@ def main():
             add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
             print("Done")
             z=0
-            if object_ids[6]!=-1:
+            if object_ids[5]!=-1:
                 while not rospy.is_shutdown():
                     print("Found object_", object_ids[5])
                     ur5_pose_1 = geometry_msgs.msg.Pose()
@@ -495,11 +495,11 @@ def main():
             add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
             print("Done")
             z=0
-            if object_ids[3]!=-1:
+            if object_ids[4]!=-1:
                 while not rospy.is_shutdown():
-                    print("Found object_", object_ids[3])
+                    print("Found object_", object_ids[4])
                     ur5_pose_1 = geometry_msgs.msg.Pose()
-                    trans = object_tranforms[3][0]
+                    trans = object_tranforms[4][0]
                     x, y, z = - 0.0022, - 0.19, + 0.2
                     x = float(input("Enter x: "))
                     y = float(input("Enter y: "))
