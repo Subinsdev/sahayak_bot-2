@@ -86,7 +86,7 @@ def main():
     global pub1
     pub1 = rospy.Publisher("/status", Pose, queue_size=1)
 
-    lst_joint_angles_1 = [-0.4, 0.74, 0.31, -0.02, -0.96, -0.02] #[0, 1.08, 0.37, 0, 0, 0]
+    lst_joint_angles_1 =[0.35, -0.37, -0.785, -1, -0.75, 1.57] #[-0.4, 0.74, 0.31, -0.02, -0.96, -0.02] #[0, 1.08, 0.37, 0, 0, 0]
     while not rospy.is_shutdown():
         f = ur5.set_joint_angles(lst_joint_angles_1)
         if f:

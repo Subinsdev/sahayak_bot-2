@@ -215,7 +215,7 @@ def findObjects():
     return_object_tranform = [0]*8
     rate = rospy.Rate(10.0)
     obj_name = '/object_'
-    object_ids = [[59, 71, 78], [57, 74, 76, 82], [55, 70, 73, 75, 83], [56, 41, 80], [58, 43, 64], [44, 68,70], [42, 72, 81], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
+    object_ids = [[59, 71, 78], [57, 74, 76, 82], [55, 70, 73, 75, 83], [56, 41, 80], [58, 43, 64], [44, 68,69,84], [42, 72, 81], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
     #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
     start_time = time.time()
     end_time = time.time()
@@ -264,19 +264,47 @@ def get_publish_obj(name, position):
     obj.pose.pose.orientation.w = angles[0]
     detection_pub.publish(obj)
 
+def add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms):
+    obj = geometry_msgs.msg.PoseStamped()
+    angles = quaternion_from_euler(0, 0, 0)
+    obj.header.frame_id = "/ebot_base"
+    obj.pose.orientation.x = angles[0]
+    obj.pose.orientation.y = angles[1]
+    obj.pose.orientation.z = angles[2]
+    obj.pose.orientation.w = angles[3]
+    names = ["wheels", "eyfi", "fpga", "battery", "glue", "coke", "adhesive", "glass"]
+    paths = ["/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/robot_wheels/meshes/robot_wheels.dae",
+    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/eYIFI/meshes/eyifi.dae",
+    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/biscuits/meshes/biscuits.dae",
+    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/soap2/meshes/soap2.dae",
+    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/glue/meshes/glue.dae",
+    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/coke_can/meshes/coke_can.dae",
+    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/adhesive/meshes/adhesive.dae",
+    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/water_glass/meshes/glass.dae"]
+    scale = [(1, 1, 1), (0.1, 0.1, 0.1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1)]
+    for i in range(len(object_ids)):
+        if object_ids[i]!=-1:
+            trans = object_tranforms[i][0]
+            obj.pose.position.x = trans[0]
+            obj.pose.position.y = trans[1]
+            obj.pose.position.z = trans[2]
+            ur5.add_mesh(names[i], obj, paths[i], scale[i])
+
 def main():
     global ur5
     ur5 = Ur5Moveit()
 
     way_points = [
+                (3.6, 0.85,0,1), #enter the hallway point
+
                 #Object 1
                 (13.035, 0.99, -0.702, 0.711), #Pantry Intermediate outside door
                 (13.035, -0.1, -0.702, 0.711), #Pantry Intermediate inside door
                 (13.035, -0.1, -0.182, 0.98), #Pantry Intermediate inside door orientation
-                (14.608, -0.62, -0.718, 0.695), #Pantry Pickup Table 1
+                (14.615, -0.62, -0.718, 0.695), #Pantry Pickup Table 1
 
-                (14.68, -0.53, 1, 0.0008), #Pantry Pickup Table 1 - Orientation to Table2
-                (11.25, -1.42, 1, 0.0008), #Pantry Pickup Table 2 Position 1 - Orientation
+                (14.615, -0.62, 1, 0.0008), #Pantry Pickup Table 1 - Orientation to Table2
+                (11.35, -1.42, 1, 0.0008), #Pantry Pickup Table 2 Position 1 - Orientation
                 (11.25, -1.42, -0.709, -0.70), #Pantry Pickup Table 2 Position 1
 
                 (11.37, -1.42, 0.3824, 0.92395), #Pantry Pick.70up Table 2 Position 1 Orientation
@@ -320,11 +348,11 @@ def main():
     print("Success")
 
     # Moving to Table 1
-    for i in range(4):
+    for i in range(5):
         movebase_client(way_points[i]) #going to goal locations
 
     # coke table left up position
-    state=[0.0, 0.0, 0.0, 0, 0, 0]
+    state=[-0.4, 0.0, 0.0, 0, 0, 0]
     ur5.go_to_joint(state)
 
     #Finding Coke
@@ -339,56 +367,19 @@ def main():
         print(object_ids)
         print(object_tranforms)
         print("Adding deteced objects in rviz")
-        # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+        add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
         print("Done")
+        z=0
         if object_ids[5]!=-1:
-            print("Found object_", object_ids[5])
-            ur5_pose_1 = geometry_msgs.msg.Pose()
-            trans = object_tranforms[5][0]
-            if(i == 0):
-                x, y, z = 0.005, -0.8, 0.2
-            elif(i == 1):
-                x, y, z = 0.005, -0.18, 0.22
-
-            ur5_pose_1.position.x = trans[0]+x
-            ur5_pose_1.position.y = trans[1]+y
-            ur5_pose_1.position.z = trans[2]+z
-            angles = quaternion_from_euler(3.8, 0, -3.14)
-            ur5_pose_1.orientation.x = angles[0]
-            ur5_pose_1.orientation.y = angles[1]
-            ur5_pose_1.orientation.z = angles[2]
-            ur5_pose_1.orientation.w = angles[3]
-            ur5.go_to_pose(ur5_pose_1)
-
-            ur5.closeGripper(0.15)
-            ur5.go_to_joint(states[i])
-            break
-
-    ur5.go_to_joint(lst_joint_angles_1)
-    movebase_client(way_points[4])
-
-    if object_ids[5] == -1:
-        movebase_client(way_points[5])
-        movebase_client(way_points[6])
-        state=[0.0, 0.0, 0.0, 0, 0, 0]
-        ur5.go_to_joint(state)
-
-        states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57], [-0.2, -0.37, -0.785, -1, -0.8, 1.57]]
-
-        for i in range(len(states)):
-            ur5.go_to_joint(states[i])
-            object_ids, object_tranforms  = findObjects()
-            print(object_ids)
-            print(object_tranforms)
-            print("Adding deteced objects in rviz")
-            # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
-            print("Done")
-            if object_ids[5]!=-1:
+            while not rospy.is_shutdown():
+                x = float(input("Enter x: "))
+                y = float(input("Enter y: "))
+                z = float(input("Enter z: "))
                 print("Found object_", object_ids[5])
                 ur5_pose_1 = geometry_msgs.msg.Pose()
                 trans = object_tranforms[5][0]
                 if(i == 0):
-                    x, y, z = 0.005, -0.8, 0.2
+                    x, y, z = 0.005, -0.18, 0.22
                 elif(i == 1):
                     x, y, z = 0.005, -0.18, 0.22
 
@@ -401,15 +392,77 @@ def main():
                 ur5_pose_1.orientation.z = angles[2]
                 ur5_pose_1.orientation.w = angles[3]
                 ur5.go_to_pose(ur5_pose_1)
+                flag = int(input("Close the gripper: "))
+                if flag==1:
+                    break
 
+            ur5_pose_1.position.z = trans[2]+z-0.07
+            ur5.go_to_pose(ur5_pose_1)
+
+            ur5.closeGripper(0.15)
+            ur5.go_to_joint(states[i])
+            break
+
+    ur5.go_to_joint(lst_joint_angles_1)
+    movebase_client(way_points[5])
+
+    if object_ids[5] == -1:
+        movebase_client(way_points[6])
+        movebase_client(way_points[7])
+        state=[-0.4, 0.0, 0.0, 0, 0, 0]
+        ur5.go_to_joint(state)
+
+        states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57], [-0.2, -0.37, -0.785, -1, -0.8, 1.57]]
+
+        for i in range(len(states)):
+            ur5.go_to_joint(states[i])
+            object_ids, object_tranforms  = findObjects()
+            print(object_ids)
+            print(object_tranforms)
+            print("Adding deteced objects in rviz")
+            add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+            print("Done")
+            z=0
+            if object_ids[5]!=-1:
+                while not rospy.is_shutdown():
+                    x = float(input("Enter x: "))
+                    y = float(input("Enter y: "))
+                    z = float(input("Enter z: "))
+                    print("Found object_", object_ids[5])
+                    ur5_pose_1 = geometry_msgs.msg.Pose()
+                    trans = object_tranforms[5][0]
+                    if(i == 0):
+                        x, y, z = 0.005, -0.8, 0.2
+                    elif(i == 1):
+                        x, y, z = 0.005, -0.18, 0.22
+
+                    ur5_pose_1.position.x = trans[0]+x
+                    ur5_pose_1.position.y = trans[1]+y
+                    ur5_pose_1.position.z = trans[2]+z
+                    angles = quaternion_from_euler(3.8, 0, -3.14)
+                    ur5_pose_1.orientation.x = angles[0]
+                    ur5_pose_1.orientation.y = angles[1]
+                    ur5_pose_1.orientation.z = angles[2]
+                    ur5_pose_1.orientation.w = angles[3]
+                    ur5.go_to_pose(ur5_pose_1)
+                    flag = int(input("Close the gripper: "))
+                    if flag==1:
+                        break
+
+                ur5_pose_1.position.z = trans[2]+z-0.07
+                ur5.go_to_pose(ur5_pose_1)
+                
                 ur5.closeGripper(0.15)
                 ur5.go_to_joint(states[i])
                 break
 
     ur5.go_to_joint(lst_joint_angles_1)
 
-    for i in range(7,13):
+    for i in range(8,14):
         movebase_client(way_points[i])
+
+    state = [-0.05, -0.37, -0.785, -1, -0.8, 1.57]
+    ur5.go_to_joint(state)
 
     # #for the the pantry first table
     # if objects_ids[5]  == -1:
