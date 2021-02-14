@@ -367,14 +367,11 @@ def main():
         print(object_ids)
         print(object_tranforms)
         print("Adding deteced objects in rviz")
-        add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+        # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
         print("Done")
         z=0
         if object_ids[5]!=-1:
             while not rospy.is_shutdown():
-                x = float(input("Enter x: "))
-                y = float(input("Enter y: "))
-                z = float(input("Enter z: "))
                 print("Found object_", object_ids[5])
                 ur5_pose_1 = geometry_msgs.msg.Pose()
                 trans = object_tranforms[5][0]
@@ -382,7 +379,9 @@ def main():
                     x, y, z = 0.005, -0.18, 0.22
                 elif(i == 1):
                     x, y, z = 0.005, -0.18, 0.22
-
+                x = float(input("Enter x: "))
+                y = float(input("Enter y: "))
+                z = float(input("Enter z: "))
                 ur5_pose_1.position.x = trans[0]+x
                 ur5_pose_1.position.y = trans[1]+y
                 ur5_pose_1.position.z = trans[2]+z
@@ -420,14 +419,11 @@ def main():
             print(object_ids)
             print(object_tranforms)
             print("Adding deteced objects in rviz")
-            add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+            # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
             print("Done")
             z=0
             if object_ids[5]!=-1:
                 while not rospy.is_shutdown():
-                    x = float(input("Enter x: "))
-                    y = float(input("Enter y: "))
-                    z = float(input("Enter z: "))
                     print("Found object_", object_ids[5])
                     ur5_pose_1 = geometry_msgs.msg.Pose()
                     trans = object_tranforms[5][0]
@@ -435,7 +431,9 @@ def main():
                         x, y, z = 0.005, -0.8, 0.2
                     elif(i == 1):
                         x, y, z = 0.005, -0.18, 0.22
-
+                    x = float(input("Enter x: "))
+                    y = float(input("Enter y: "))
+                    z = float(input("Enter z: "))
                     ur5_pose_1.position.x = trans[0]+x
                     ur5_pose_1.position.y = trans[1]+y
                     ur5_pose_1.position.z = trans[2]+z
@@ -463,6 +461,139 @@ def main():
 
     state = [-0.05, -0.37, -0.785, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
+
+    #Metting room dropbox locations
+    state=[0, 0.23, -1.22, 0, 1.36, 0]
+    ur5.go_to_joint(state)
+
+    state=[1.13, 0.4, -1.22, 0, 1.36, 0]
+    ur5.go_to_joint(state)
+
+    #dropping the coke can 
+    print("Opening gripper")
+    ur5.openGripper()
+
+    #Meeting room pickup
+    movebase_client(way_points[14])
+
+    #Picking up glue
+    states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57]]
+
+    for i in range(len(states)):
+            ur5.go_to_joint(states[i])
+            object_ids, object_tranforms  = findObjects()
+            print(object_ids)
+            print(object_tranforms)
+            print("Adding deteced objects in rviz")
+            # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+            print("Done")
+            z=0
+            if object_ids[4]!=-1:
+                while not rospy.is_shutdown():
+                    print("Found object_", object_ids[5])
+                    ur5_pose_1 = geometry_msgs.msg.Pose()
+                    trans = object_tranforms[5][0]
+                    x, y, z = - 0.0022, - 0.19, + 0.2
+                    x = float(input("Enter x: "))
+                    y = float(input("Enter y: "))
+                    z = float(input("Enter z: "))
+                    ur5_pose_1.position.x = trans[0]+x
+                    ur5_pose_1.position.y = trans[1]+y
+                    ur5_pose_1.position.z = trans[2]+z
+                    angles = quaternion_from_euler(3.68, 0, -3.14)
+                    ur5_pose_1.orientation.x = angles[0]
+                    ur5_pose_1.orientation.y = angles[1]
+                    ur5_pose_1.orientation.z = angles[2]
+                    ur5_pose_1.orientation.w = angles[3]
+                    ur5.go_to_pose(ur5_pose_1)
+                    flag = int(input("Close the gripper: "))
+                    if flag==1:
+                        break
+
+                ur5_pose_1.position.z = trans[2]+z-0.075
+                ur5.go_to_pose(ur5_pose_1)
+                
+                ur5.closeGripper(0.31)
+                ur5.go_to_joint(states[i])
+                break
+
+    ur5.go_to_joint(lst_joint_angles_1)
+
+    movebase_client(way_points[15])
+    movebase_client(way_points[16])
+    movebase_client(way_points[17])
+
+    # Research lab drop box 
+    state=[0, 0, -1.22, 0, 0.96, 0.4]
+    ur5.go_to_joint(state)
+
+    state=[-1.47, 0, -1.22, 0, 0.96, 0.4]
+    ur5.go_to_joint(state)
+
+    #dropping the glue 
+    print("Opening gripper")
+    ur5.openGripper()
+
+    movebase_client(way_points[18])
+    movebase_client(way_points[19])
+
+    states=[[0, -0.37, -0.785, -1, -0.52, 1.57], [0.56, -0.37, -0.785, -1, -0.65, 1.57]]
+    
+    for state in states:
+        ur5.go_to_joint(state)
+        object_ids, object_tranforms  = findObjects()
+        print(object_ids)
+        print(object_tranforms)
+        print("Adding deteced objects in rviz")
+        add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+        print("Done")
+        if object_ids[2]!=-1:
+            print("Found object_", object_ids[2])
+            while not rospy.is_shutdown():
+                x = float(input("Enter x: "))
+                y = float(input("Enter y: "))
+                z = float(input("Enter z: "))
+                rot_angle = float(input("Enter rotation: "))
+                ur5_pose_1 = geometry_msgs.msg.Pose()
+                trans = object_tranforms[2][0]
+                ur5_pose_1.position.x = trans[0]+x
+                ur5_pose_1.position.y = trans[1]+y
+                ur5_pose_1.position.z = trans[2]+z
+                angles = quaternion_from_euler(3.8, 0, -3.14+rot_angle)
+                ur5_pose_1.orientation.x = angles[0]
+                ur5_pose_1.orientation.y = angles[1]
+                ur5_pose_1.orientation.z = angles[2]
+                ur5_pose_1.orientation.w = angles[3]
+                ur5.go_to_pose(ur5_pose_1)
+                flag = int(input("Close the gripper: "))
+                if flag==1:
+                    break
+            ur5.closeGripper(0.15)
+            ur5.go_to_joint([0.56, -0.37, -0.785, -1, -0.65, 1.57])
+            ur5.openGripper()
+            break
+
+    movebase_client(way_points[20])
+
+    # need to add code here
+
+    for i in range(21,26)
+        movebase_client(way_points[i])
+
+    #Conference room joint angles for dropping 
+    state=[0, 0, -0.8, 0, 0, 0]
+    ur5.go_to_joint(state)
+
+    state=[0.6, 0, -0.8, 0, 0, 0]
+    ur5.go_to_joint(state)
+    
+    print("Opening gripper")
+    ur5.openGripper()
+
+    movebase_client(way_points[26])
+    movebase_client(way_points[27])
+    movebase_client(way_points[28])
+
 
     # #for the the pantry first table
     # if objects_ids[5]  == -1:
