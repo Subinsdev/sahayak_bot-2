@@ -273,14 +273,14 @@ def add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms):
     obj.pose.orientation.z = angles[2]
     obj.pose.orientation.w = angles[3]
     names = ["wheels", "eyfi", "fpga", "battery", "glue", "coke", "adhesive", "glass"]
-    paths = ["/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/robot_wheels/meshes/robot_wheels.dae",
-    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/eYIFI/meshes/eyifi.dae",
-    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/biscuits/meshes/biscuits.dae",
-    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/soap2/meshes/soap2.dae",
-    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/glue/meshes/glue.dae",
-    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/coke_can/meshes/coke_can.dae",
-    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/adhesive/meshes/adhesive.dae",
-    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/water_glass/meshes/glass.dae"]
+    paths = ["/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/robot_wheels/meshes/robot_wheels.dae",
+    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/eYIFI/meshes/eyifi.dae",
+    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/biscuits/meshes/biscuits.dae",
+    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/soap2/meshes/soap2.dae",
+    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/glue/meshes/glue.dae",
+    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/coke_can/meshes/coke_can.dae",
+    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/adhesive/meshes/adhesive.dae",
+    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/water_glass/meshes/glass.dae"]
     scale = [(1, 1, 1), (0.1, 0.1, 0.1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1)]
     for i in range(len(object_ids)):
         if object_ids[i]!=-1:
@@ -309,10 +309,10 @@ def main():
 
                 (11.37, -1.42, 0.3824, 0.92395), #Pantry Pick.70up Table 2 Position 1 Orientation
                 (13.2159, -0.604, -0.7577, -0.650), #Pantry Out OIntermediate
-                (13.02, 0.647, -0.719, -0.694), #Pantry Out OIntermediate
+                (13.0, 0.8, -0.719, -0.694), #Pantry Out OIntermediate
 
-                ( 8.638, 1.148, 0.7063, 0.7078), #Meeting Intermediate CV
-                ( 8.62, 2.132, 0.7063, 0.7078), #Meeting Intermediate 2 CV
+                ( 8.59, 1.148, 0.7063, 0.7078), #Meeting Intermediate CV
+                ( 8.59, 2.132, 0.7063, 0.7078), #Meeting Intermediate 2 CV
                 ( 6.9, 2.6, 0.00, 0.010), #Meeting DropBox
                 # #Object 2
                 ( 7.6, 2.4, 0.0, 0.007), #Meeting Pickup
@@ -336,6 +336,7 @@ def main():
                 (0,0,0,1)]                   #Start
 
     lst_joint_angles_1 = [-0.4, 0.74, 0.31, -0.02, -0.96, -0.02] #[0, 1.08, 0.37, 0, 0, 0]
+    lst_joint_angles_2 = [-0.5, 0.74, 0.31, -0.02, -0.96, -0.02] #[0, 1.08, 0.37, 0, 0, 0]
 
     #going to the crouch position
     # while not rospy.is_shutdown():
@@ -371,40 +372,41 @@ def main():
         print("Done")
         z=0
         if object_ids[5]!=-1:
-            while not rospy.is_shutdown():
-                print("Found object_", object_ids[5])
-                ur5_pose_1 = geometry_msgs.msg.Pose()
-                trans = object_tranforms[5][0]
-                if(i == 0):
-                    x, y, z = 0.005, -0.18, 0.22
-                elif(i == 1):
-                    x, y, z = 0.005, -0.18, 0.22
-                x = float(input("Enter x: "))
-                y = float(input("Enter y: "))
-                z = float(input("Enter z: "))
-                ur5_pose_1.position.x = trans[0]+x
-                ur5_pose_1.position.y = trans[1]+y
-                ur5_pose_1.position.z = trans[2]+z
-                angles = quaternion_from_euler(3.8, 0, -3.14)
-                ur5_pose_1.orientation.x = angles[0]
-                ur5_pose_1.orientation.y = angles[1]
-                ur5_pose_1.orientation.z = angles[2]
-                ur5_pose_1.orientation.w = angles[3]
-                ur5.go_to_pose(ur5_pose_1)
-                flag = int(input("Close the gripper: "))
-                if flag==1:
-                    break
+            # while not rospy.is_shutdown():
+            print("Found object_", object_ids[5])
+            ur5_pose_1 = geometry_msgs.msg.Pose()
+            trans = object_tranforms[5][0]
+            if(i == 0):
+                x, y, z = 0.005, -0.175, 0.2
+            elif(i == 1):
+                x, y, z = 0.005, -0.175, 0.2
+            # x = float(input("Enter x: "))
+            # y = float(input("Enter y: "))
+            # z = float(input("Enter z: "))
+            ur5_pose_1.position.x = trans[0]+x
+            ur5_pose_1.position.y = trans[1]+y
+            ur5_pose_1.position.z = trans[2]+z
+            angles = quaternion_from_euler(3.8, 0, -3.14)
+            ur5_pose_1.orientation.x = angles[0]
+            ur5_pose_1.orientation.y = angles[1]
+            ur5_pose_1.orientation.z = angles[2]
+            ur5_pose_1.orientation.w = angles[3]
+            ur5.go_to_pose(ur5_pose_1)
+            # flag = int(input("Close the gripper: "))
+            # if flag==1:
+            #     break
 
             ur5_pose_1.position.z = trans[2]+z-0.07
             ur5.go_to_pose(ur5_pose_1)
 
-            ur5.closeGripper(0.15)
+            ur5.closeGripper(0.23)
             ur5.go_to_joint(states[i])
             break
 
-            # ur5.go_to_joint(lst_joint_angles_1)
+    ur5.go_to_joint(lst_joint_angles_2)
 
     if object_ids[5] == -1:
+        ur5.go_to_joint(lst_joint_angles_1)
         movebase_client(way_points[5])
         movebase_client(way_points[6])
         movebase_client(way_points[7])
@@ -423,39 +425,39 @@ def main():
             print("Done")
             z=0
             if object_ids[5]!=-1:
-                while not rospy.is_shutdown():
-                    print("Found object_", object_ids[5])
-                    ur5_pose_1 = geometry_msgs.msg.Pose()
-                    trans = object_tranforms[5][0]
-                    if(i == 0):
-                        x, y, z = 0.005, -0.8, 0.2
-                    elif(i == 1):
-                        x, y, z = 0.005, -0.18, 0.22
-                    x = float(input("Enter x: "))
-                    y = float(input("Enter y: "))
-                    z = float(input("Enter z: "))
-                    ur5_pose_1.position.x = trans[0]+x
-                    ur5_pose_1.position.y = trans[1]+y
-                    ur5_pose_1.position.z = trans[2]+z
-                    angles = quaternion_from_euler(3.8, 0, -3.14)
-                    ur5_pose_1.orientation.x = angles[0]
-                    ur5_pose_1.orientation.y = angles[1]
-                    ur5_pose_1.orientation.z = angles[2]
-                    ur5_pose_1.orientation.w = angles[3]
-                    ur5.go_to_pose(ur5_pose_1)
-                    flag = int(input("Close the gripper: "))
-                    if flag==1:
-                        break
+                # while not rospy.is_shutdown():
+                print("Found object_", object_ids[5])
+                ur5_pose_1 = geometry_msgs.msg.Pose()
+                trans = object_tranforms[5][0]
+                if(i == 0):
+                    x, y, z = 0.01, -0.175, 0.2
+                elif(i == 1):
+                    x, y, z = 0.01, -0.175, 0.2
+                # x = float(input("Enter x: "))
+                # y = float(input("Enter y: "))
+                # z = float(input("Enter z: "))
+                ur5_pose_1.position.x = trans[0]+x
+                ur5_pose_1.position.y = trans[1]+y
+                ur5_pose_1.position.z = trans[2]+z
+                angles = quaternion_from_euler(3.8, 0, -3.14)
+                ur5_pose_1.orientation.x = angles[0]
+                ur5_pose_1.orientation.y = angles[1]
+                ur5_pose_1.orientation.z = angles[2]
+                ur5_pose_1.orientation.w = angles[3]
+                ur5.go_to_pose(ur5_pose_1)
+                # flag = int(input("Close the gripper: "))
+                # if flag==1:
+                #     break
 
                 ur5_pose_1.position.z = trans[2]+z-0.07
                 ur5.go_to_pose(ur5_pose_1)
 
-                ur5.closeGripper(0.21)
+                ur5.closeGripper(0.23)
                 ur5.go_to_joint(states[i])
-                movebase_client(way_points[8])
                 break
 
-    ur5.go_to_joint(lst_joint_angles_1)
+    ur5.go_to_joint(lst_joint_angles_2)
+    movebase_client(way_points[8])
 
     for i in range(9,14):
         movebase_client(way_points[i])
@@ -524,7 +526,7 @@ def main():
                 ur5.go_to_joint(states[i])
                 break
 
-    ur5.go_to_joint(lst_joint_angles_1)
+    ur5.go_to_joint(lst_joint_angles_2)
 
     movebase_client(way_points[15])
     movebase_client(way_points[16])
@@ -585,12 +587,12 @@ def main():
             break
 
 
-    ur5.go_to_joint(lst_joint_angles_1)
+    ur5.go_to_joint(lst_joint_angles_2)
     movebase_client(way_points[20])
 
     # need to add code here
 
-    for i in range(21,26):
+    for i in range(21,25):
         movebase_client(way_points[i])
 
     #Conference room joint angles for dropping
@@ -608,6 +610,7 @@ def main():
 
     ur5.go_to_joint(lst_joint_angles_1)
 
+    movebase_client(way_points[25])
     movebase_client(way_points[26])
     movebase_client(way_points[27])
     movebase_client(way_points[28])
