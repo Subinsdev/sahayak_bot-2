@@ -570,9 +570,10 @@ def main():
                     break
             ur5.closeGripper(0.15)
             ur5.go_to_joint([0.56, -0.37, -0.785, -1, -0.65, 1.57])
-            ur5.openGripper()
             break
 
+    
+    ur5.go_to_joint(lst_joint_angles_1)
     movebase_client(way_points[20])
 
     # need to add code here
