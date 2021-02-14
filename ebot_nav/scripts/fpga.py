@@ -96,10 +96,10 @@ class Ur5Moveit:
 
     def go_to_pose(self, arg_pose):
 
-        pose_values = self._group.get_current_pose().pose
-        rospy.loginfo('\033[94m' + ">>> Current Pose:" + '\033[0m')
-        rospy.loginfo(pose_values)
-#
+        # pose_values = self._group.get_current_pose().pose
+        # rospy.loginfo('\033[94m' + ">>> Current Pose:" + '\033[0m')
+        # rospy.loginfo(pose_values)
+
         #angles = euler_from_quaternion([pose_values.orientation.x, pose_values.orientation.y,pose_values.orientation.z,pose_values.orientation.w])
         #print("CURRENT ANGLE")
         #rospy.loginfo(angles)
@@ -107,13 +107,13 @@ class Ur5Moveit:
         self._group.set_pose_target(arg_pose)
         flag_plan = self._group.go(wait=True)  # wait=False for Async Move
 
-        pose_values = self._group.get_current_pose().pose
-        rospy.loginfo('\033[94m' + ">>> Final Pose:" + '\033[0m')
-        rospy.loginfo(pose_values)
-#
-        list_joint_values = self._group.get_current_joint_values()
-        rospy.loginfo('\033[94m' + ">>> Final Joint Values:" + '\033[0m')
-        rospy.loginfo(list_joint_values)
+        # pose_values = self._group.get_current_pose().pose
+        # rospy.loginfo('\033[94m' + ">>> Final Pose:" + '\033[0m')
+        # rospy.loginfo(pose_values)
+
+        # list_joint_values = self._group.get_current_joint_values()
+        # rospy.loginfo('\033[94m' + ">>> Final Joint Values:" + '\033[0m')
+        # rospy.loginfo(list_joint_values)
 
         if (flag_plan == True):
             rospy.loginfo(
@@ -245,7 +245,7 @@ def findObjects():
     return_object_tranform = [0]*8
     rate = rospy.Rate(10.0)
     obj_name = '/object_'
-    object_ids = [[59, 71, 78], [57, 74, 76, 82], [55, 70, 73, 75, 83], [56, 41, 80], [58, 43, 64], [44, 68], [42, 72, 81], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
+    object_ids = [[59, 71, 78], [57, 74, 76, 82], [55, 70, 73, 75, 83, 88], [56, 41, 80], [58, 43, 64, 85], [44, 68, 84, 87], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
     #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
     start_time = time.time()
     end_time = time.time()
@@ -328,42 +328,94 @@ def main():
     # state=[0, -0.07, 0.03, -0.25, 0, -0.21]
     #Go up and look down
     #state=[0, -0.37, -0.785, -1, -0.52, 1.57]
+
+    #################LEFT SIDE############################
     states=[[0, -0.37, -0.785, -1, -0.52, 1.57], [0.56, -0.37, -0.785, -1, -0.65, 1.57]]
-    
     for state in states:
         ur5.go_to_joint(state)
         object_ids, object_tranforms  = findObjects()
+        #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
         print(object_ids)
         print(object_tranforms)
-        print("Adding deteced objects in rviz")
-        add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
-        print("Done")
+        #print("Adding deteced objects in rviz")
+        #add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+        #print("Done")
         if object_ids[2]!=-1:
             print("Found object_", object_ids[2])
-            while not rospy.is_shutdown():
-                x = float(input("Enter x: "))
-                y = float(input("Enter y: "))
-                z = float(input("Enter z: "))
-                rot_angle = float(input("Enter rotation: "))
-                ur5_pose_1 = geometry_msgs.msg.Pose()
-                trans = object_tranforms[2][0]
-                ur5_pose_1.position.x = trans[0]+x
-                ur5_pose_1.position.y = trans[1]+y
-                ur5_pose_1.position.z = trans[2]+z
-                angles = quaternion_from_euler(3.8, 0, -3.14+rot_angle)
-                ur5_pose_1.orientation.x = angles[0]
-                ur5_pose_1.orientation.y = angles[1]
-                ur5_pose_1.orientation.z = angles[2]
-                ur5_pose_1.orientation.w = angles[3]
-                ur5.go_to_pose(ur5_pose_1)
-                flag = int(input("Close the gripper: "))
-                if flag==1:
-                    break
-            ur5.closeGripper(0.15)
+            # x = float(input("Enter x: "))
+            # y = float(input("Enter y: "))
+            # z = float(input("Enter z: "))
+            #rot_angle = float(input("Enter rotation: "))
+            x, y, z = -0.09, -0.195, 0.19
+            if object_ids[2]==75:
+                x, y, z = -0.11, -0.205, 0.19
+            elif object_ids[2]==73:
+                x, y, z = -0.1, -0.195, 0.21
+            elif object_ids[2]==88:
+                x, y, z = -0.08, -0.16, 0.19
+            
+            ur5_pose_1 = geometry_msgs.msg.Pose()
+            trans = object_tranforms[2][0]
+            ur5_pose_1.position.x = trans[0]+x
+            ur5_pose_1.position.y = trans[1]+y
+            ur5_pose_1.position.z = trans[2]+z
+            angles = quaternion_from_euler(3.8, 0, -3.49)
+            ur5_pose_1.orientation.x = angles[0]
+            ur5_pose_1.orientation.y = angles[1]
+            ur5_pose_1.orientation.z = angles[2]
+            ur5_pose_1.orientation.w = angles[3]
+            ur5.go_to_pose(ur5_pose_1)
+
+            ur5_pose_1.position.z = trans[2]+0.155
+            ur5.go_to_pose(ur5_pose_1)
+            # flag = int(input("Close the gripper: "))
+            # if flag==1:
+            #     break
+            ur5.closeGripper(0.185)
             ur5.go_to_joint([0.56, -0.37, -0.785, -1, -0.65, 1.57])
             ur5.openGripper()
             break
-    print("Should go front?", found)
+    
+    #################RIGHT SIDE##################
+    # states=[[0, -0.37, -0.785, -1, -0.52, 1.57]]
+    # for state in states:
+    #     ur5.go_to_joint(state)
+    #     object_ids, object_tranforms  = findObjects()
+    #     #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
+    #     print(object_ids)
+    #     print(object_tranforms)
+    #     #print("Adding deteced objects in rviz")
+    #     #add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+    #     #print("Done")
+    #     if object_ids[2]!=-1:
+    #         print("Found object_", object_ids[2])
+    #         # x = float(input("Enter x: "))
+    #         # y = float(input("Enter y: "))
+    #         # z = float(input("Enter z: "))
+    #         #rot_angle = float(input("Enter rotation: "))
+    #         x, y, z = -0.08, -0.16, 0.19
+    #         ur5_pose_1 = geometry_msgs.msg.Pose()
+    #         trans = object_tranforms[2][0]
+    #         ur5_pose_1.position.x = trans[0]+x
+    #         ur5_pose_1.position.y = trans[1]+y
+    #         ur5_pose_1.position.z = trans[2]+z
+    #         angles = quaternion_from_euler(3.8, 0, -3.49)
+    #         ur5_pose_1.orientation.x = angles[0]
+    #         ur5_pose_1.orientation.y = angles[1]
+    #         ur5_pose_1.orientation.z = angles[2]
+    #         ur5_pose_1.orientation.w = angles[3]
+    #         ur5.go_to_pose(ur5_pose_1)
+
+    #         ur5_pose_1.position.z = trans[2]+0.155
+    #         ur5.go_to_pose(ur5_pose_1)
+    #         # flag = int(input("Close the gripper: "))
+    #         # if flag==1:
+    #         #     break
+    #         ur5.closeGripper(0.185)
+    #         ur5.go_to_joint([0.56, -0.37, -0.785, -1, -0.65, 1.57])
+    #         ur5.openGripper()
+    #         break
+    #print("Should go front?", found)
 
     #Go forward if you didnt find the object
     # if object_ids[2]==-1:
