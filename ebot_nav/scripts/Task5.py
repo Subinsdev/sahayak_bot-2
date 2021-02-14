@@ -186,6 +186,13 @@ class Ur5Moveit:
         rospy.loginfo(
             '\033[94m' + "Object of class Ur5Moveit Deleted." + '\033[0m')
 
+    def remove_world_obj(self, name = None):
+        co =  CollisionObject()
+        co.operation =  CollisionObject.REMOVE
+        if name != None:
+            co.id = name
+        self._pub_co.publish(co)
+
 def movebase_client(g):
     client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
     client.wait_for_server()
@@ -281,7 +288,7 @@ def add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms):
     "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/coke_can/meshes/coke_can.dae",
     "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/adhesive/meshes/adhesive.dae",
     "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/water_glass/meshes/glass.dae"]
-    scale = [(1, 1, 1), (0.1, 0.1, 0.1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1)]
+    scale = [(1, 1, 1), (0.1, 0.1, 0.1), (1, 1, 1), (1, 1, 1), (0.1, 0.1, 0.1), (0.1, 0.1, 0.1), (1, 1, 1), (1, 1, 1)]
     for i in range(len(object_ids)):
         if object_ids[i]!=-1:
             trans = object_tranforms[i][0]
@@ -289,6 +296,13 @@ def add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms):
             obj.pose.position.y = trans[1]
             obj.pose.position.z = trans[2]
             ur5.add_mesh(names[i], obj, paths[i], scale[i])
+
+def remove_detected_objects_mesh_in_rviz(object_ids):
+    names = ["wheels", "eyfi", "fpga", "battery", "glue", "coke", "adhesive", "glass"]
+    for i in range(len(object_ids)):
+        if object_ids[i]!=-1:
+            ur5.remove_world_obj(names[i])
+        
 
 def main():
     global ur5
@@ -307,7 +321,7 @@ def main():
                 (11.35, -1.32, 1, 0.0008), #Pantry Pickup Table 2 Position 1 - Orientation
                 (11.15, -1.32, -0.709, -0.70), #Pantry Pickup Table 2 Position 1
 
-                (11.37, -1.42, 0.3824, 0.92395), #Pantry Pick.70up Table 2 Position 1 Orientation
+                (11.15, -1.32, 0.3824, 0.92395), #Pantry Pick.70up Table 2 Position 1 Orientation
                 (13.2159, -0.604, -0.7577, -0.650), #Pantry Out OIntermediate
                 (13.0, 0.8, -0.719, -0.694), #Pantry Out OIntermediate
 
@@ -401,6 +415,7 @@ def main():
 
             ur5.closeGripper(0.23)
             ur5.go_to_joint(states[i])
+            remove_detected_objects_mesh_in_rviz(object_ids)
             break
 
     ur5.go_to_joint(lst_joint_angles_2)
@@ -454,10 +469,12 @@ def main():
 
                 ur5.closeGripper(0.23)
                 ur5.go_to_joint(states[i])
+                remove_detected_objects_mesh_in_rviz(object_ids)
+                ur5.go_to_joint(lst_joint_angles_2)
+                movebase_client(way_points[8])
                 break
 
     ur5.go_to_joint(lst_joint_angles_2)
-    movebase_client(way_points[8])
 
     for i in range(9,14):
         movebase_client(way_points[i])
@@ -502,7 +519,7 @@ def main():
                 print("Found object_", object_ids[4])
                 ur5_pose_1 = geometry_msgs.msg.Pose()
                 trans = object_tranforms[4][0]
-                x, y, z = 0.01, - 0.175, + 0.2
+                x, y, z = 0.007, - 0.175, + 0.2
                 # x = float(input("Enter x: "))
                 # y = float(input("Enter y: "))
                 # z = float(input("Enter z: "))
@@ -524,6 +541,7 @@ def main():
 
                 ur5.closeGripper(0.31)
                 ur5.go_to_joint(states[i])
+                remove_detected_objects_mesh_in_rviz(object_ids)
                 break
 
     ur5.go_to_joint(lst_joint_angles_2)
@@ -584,6 +602,7 @@ def main():
                     break
             ur5.closeGripper(0.15)
             ur5.go_to_joint([0.56, -0.37, -0.785, -1, -0.65, 1.57])
+            remove_detected_objects_mesh_in_rviz(object_ids)
             break
 
 
