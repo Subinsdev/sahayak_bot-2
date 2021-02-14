@@ -215,7 +215,7 @@ def findObjects():
     return_object_tranform = [0]*8
     rate = rospy.Rate(10.0)
     obj_name = '/object_'
-    object_ids = [[59, 71, 78], [57, 74, 76, 82], [55, 70, 73, 75, 83], [56, 41, 80], [58, 43, 64], [44, 68,69,84], [42, 72, 81], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
+    object_ids = [[59, 71, 78], [57, 74, 76, 82], [55, 70, 73, 75, 83], [56, 41, 80], [58, 43, 64,85], [44, 68,69,84], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
     #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
     start_time = time.time()
     end_time = time.time()
@@ -273,14 +273,14 @@ def add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms):
     obj.pose.orientation.z = angles[2]
     obj.pose.orientation.w = angles[3]
     names = ["wheels", "eyfi", "fpga", "battery", "glue", "coke", "adhesive", "glass"]
-    paths = ["/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/robot_wheels/meshes/robot_wheels.dae",
-    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/eYIFI/meshes/eyifi.dae",
-    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/biscuits/meshes/biscuits.dae",
-    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/soap2/meshes/soap2.dae",
-    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/glue/meshes/glue.dae",
-    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/coke_can/meshes/coke_can.dae",
-    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/adhesive/meshes/adhesive.dae",
-    "/home/ubuntu1804/eyantra_ws/src/sahayak_bot/ebot_gazebo/models/water_glass/meshes/glass.dae"]
+    paths = ["/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/robot_wheels/meshes/robot_wheels.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/eYIFI/meshes/eyifi.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/biscuits/meshes/biscuits.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/soap2/meshes/soap2.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/glue/meshes/glue.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/coke_can/meshes/coke_can.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/adhesive/meshes/adhesive.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/water_glass/meshes/glass.dae"]
     scale = [(1, 1, 1), (0.1, 0.1, 0.1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1)]
     for i in range(len(object_ids)):
         if object_ids[i]!=-1:
@@ -301,7 +301,7 @@ def main():
                 (13.035, 0.99, -0.702, 0.711), #Pantry Intermediate outside door
                 (13.035, -0.1, -0.702, 0.711), #Pantry Intermediate inside door
                 (13.035, -0.1, -0.182, 0.98), #Pantry Intermediate inside door orientation
-                (14.615, -0.62, -0.718, 0.695), #Pantry Pickup Table 1
+                (14.695, -0.75, -0.718, 0.695), #Pantry Pickup Table 1
 
                 (14.615, -0.62, 1, 0.0008), #Pantry Pickup Table 1 - Orientation to Table2
                 (11.35, -1.42, 1, 0.0008), #Pantry Pickup Table 2 Position 1 - Orientation
@@ -315,7 +315,7 @@ def main():
                 ( 8.62, 2.132, 0.7063, 0.7078), #Meeting Intermediate 2 CV
                 ( 6.9, 2.6, 0.00, 0.010), #Meeting DropBox
                 # #Object 2
-                ( 7.999, 2.4, 0.0, 0.007), #Meeting Pickup
+                ( 7.6, 2.4, 0.0, 0.007), #Meeting Pickup
                 ( 8.5, 2.175, -0.6564, 0.7543), #Meeting Intermediate out CV
                 ( 8.638, 1.148, -0.6564, 0.7543), #Meeting Intermediate CV
 
@@ -359,7 +359,7 @@ def main():
     # object_ids, object_tranforms  = findObjects()
     # print(object_ids)
     #
-    states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57], [-0.2, -0.37, -0.785, -1, -0.8, 1.57]]
+    states=[[-0.07, -0.37, -0.785, -1, -0.8, 1.57], [-0.2, -0.37, -0.785, -1, -0.8, 1.57]]
 
     for i in range(len(states)):
         ur5.go_to_joint(states[i])
@@ -367,14 +367,14 @@ def main():
         print(object_ids)
         print(object_tranforms)
         print("Adding deteced objects in rviz")
-        # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+        add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
         print("Done")
         z=0
-        if object_ids[5]!=-1:
+        if object_ids[6]!=-1:
             while not rospy.is_shutdown():
-                print("Found object_", object_ids[5])
+                print("Found object_", object_ids[6])
                 ur5_pose_1 = geometry_msgs.msg.Pose()
-                trans = object_tranforms[5][0]
+                trans = object_tranforms[6][0]
                 if(i == 0):
                     x, y, z = 0.005, -0.18, 0.22
                 elif(i == 1):
@@ -405,7 +405,7 @@ def main():
     ur5.go_to_joint(lst_joint_angles_1)
     movebase_client(way_points[5])
 
-    if object_ids[5] == -1:
+    if object_ids[6] == -1:
         movebase_client(way_points[6])
         movebase_client(way_points[7])
         state=[-0.4, 0.0, 0.0, 0, 0, 0]
@@ -419,10 +419,10 @@ def main():
             print(object_ids)
             print(object_tranforms)
             print("Adding deteced objects in rviz")
-            # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+            add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
             print("Done")
             z=0
-            if object_ids[5]!=-1:
+            if object_ids[6]!=-1:
                 while not rospy.is_shutdown():
                     print("Found object_", object_ids[5])
                     ur5_pose_1 = geometry_msgs.msg.Pose()
@@ -450,17 +450,18 @@ def main():
                 ur5_pose_1.position.z = trans[2]+z-0.07
                 ur5.go_to_pose(ur5_pose_1)
                 
-                ur5.closeGripper(0.15)
+                ur5.closeGripper(0.21)
                 ur5.go_to_joint(states[i])
+                movebase_client(way_points[8])
                 break
 
     ur5.go_to_joint(lst_joint_angles_1)
 
-    for i in range(8,14):
+    for i in range(9,14):
         movebase_client(way_points[i])
 
-    state = [-0.05, -0.37, -0.785, -1, -0.8, 1.57]
-    ur5.go_to_joint(state)
+    # state = [-0.05, -0.37, -0.785, -1, -0.8, 1.57]
+    # ur5.go_to_joint(state)
 
     #Metting room dropbox locations
     state=[0, 0.23, -1.22, 0, 1.36, 0]
@@ -472,6 +473,12 @@ def main():
     #dropping the coke can 
     print("Opening gripper")
     ur5.openGripper()
+
+    state=[0, 0.23, -1.22, 0, 1.36, 0]
+    ur5.go_to_joint(state)
+
+    
+    ur5.go_to_joint(lst_joint_angles_1)
 
     #Meeting room pickup
     movebase_client(way_points[14])
@@ -485,14 +492,14 @@ def main():
             print(object_ids)
             print(object_tranforms)
             print("Adding deteced objects in rviz")
-            # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+            add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
             print("Done")
             z=0
-            if object_ids[4]!=-1:
+            if object_ids[3]!=-1:
                 while not rospy.is_shutdown():
-                    print("Found object_", object_ids[5])
+                    print("Found object_", object_ids[3])
                     ur5_pose_1 = geometry_msgs.msg.Pose()
-                    trans = object_tranforms[5][0]
+                    trans = object_tranforms[3][0]
                     x, y, z = - 0.0022, - 0.19, + 0.2
                     x = float(input("Enter x: "))
                     y = float(input("Enter y: "))
@@ -533,6 +540,11 @@ def main():
     #dropping the glue 
     print("Opening gripper")
     ur5.openGripper()
+
+    state=[0, 0, -1.22, 0, 0.96, 0.4]
+    ur5.go_to_joint(state)
+
+    ur5.go_to_joint(lst_joint_angles_1)
 
     movebase_client(way_points[18])
     movebase_client(way_points[19])
@@ -578,7 +590,7 @@ def main():
 
     # need to add code here
 
-    for i in range(21,26)
+    for i in range(21,26):
         movebase_client(way_points[i])
 
     #Conference room joint angles for dropping 
@@ -590,6 +602,11 @@ def main():
     
     print("Opening gripper")
     ur5.openGripper()
+
+    state=[0, 0, -0.8, 0, 0, 0]
+    ur5.go_to_joint(state)
+
+    ur5.go_to_joint(lst_joint_angles_1)
 
     movebase_client(way_points[26])
     movebase_client(way_points[27])
