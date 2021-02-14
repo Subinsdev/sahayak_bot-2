@@ -273,14 +273,14 @@ def add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms):
     obj.pose.orientation.z = angles[2]
     obj.pose.orientation.w = angles[3]
     names = ["wheels", "eyfi", "fpga", "battery", "glue", "coke", "adhesive", "glass"]
-    paths = ["/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/robot_wheels/meshes/robot_wheels.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/eYIFI/meshes/eyifi.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/biscuits/meshes/biscuits.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/soap2/meshes/soap2.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/glue/meshes/glue.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/coke_can/meshes/coke_can.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/adhesive/meshes/adhesive.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/water_glass/meshes/glass.dae"]
+    paths = ["/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/robot_wheels/meshes/robot_wheels.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/eYIFI/meshes/eyifi.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/biscuits/meshes/biscuits.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/soap2/meshes/soap2.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/glue/meshes/glue.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/coke_can/meshes/coke_can.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/adhesive/meshes/adhesive.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/water_glass/meshes/glass.dae"]
     scale = [(1, 1, 1), (0.1, 0.1, 0.1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1), (1, 1, 1)]
     for i in range(len(object_ids)):
         if object_ids[i]!=-1:
@@ -498,26 +498,26 @@ def main():
             print("Done")
             z=0
             if object_ids[4]!=-1:
-                while not rospy.is_shutdown():
-                    print("Found object_", object_ids[4])
-                    ur5_pose_1 = geometry_msgs.msg.Pose()
-                    trans = object_tranforms[4][0]
-                    x, y, z = - 0.0022, - 0.19, + 0.2
-                    x = float(input("Enter x: "))
-                    y = float(input("Enter y: "))
-                    z = float(input("Enter z: "))
-                    ur5_pose_1.position.x = trans[0]+x
-                    ur5_pose_1.position.y = trans[1]+y
-                    ur5_pose_1.position.z = trans[2]+z
-                    angles = quaternion_from_euler(3.68, 0, -3.14)
-                    ur5_pose_1.orientation.x = angles[0]
-                    ur5_pose_1.orientation.y = angles[1]
-                    ur5_pose_1.orientation.z = angles[2]
-                    ur5_pose_1.orientation.w = angles[3]
-                    ur5.go_to_pose(ur5_pose_1)
-                    flag = int(input("Close the gripper: "))
-                    if flag==1:
-                        break
+                # while not rospy.is_shutdown():
+                print("Found object_", object_ids[4])
+                ur5_pose_1 = geometry_msgs.msg.Pose()
+                trans = object_tranforms[4][0]
+                x, y, z = 0.01, - 0.175, + 0.2
+                # x = float(input("Enter x: "))
+                # y = float(input("Enter y: "))
+                # z = float(input("Enter z: "))
+                ur5_pose_1.position.x = trans[0]+x
+                ur5_pose_1.position.y = trans[1]+y
+                ur5_pose_1.position.z = trans[2]+z
+                angles = quaternion_from_euler(3.68, 0, -3.14)
+                ur5_pose_1.orientation.x = angles[0]
+                ur5_pose_1.orientation.y = angles[1]
+                ur5_pose_1.orientation.z = angles[2]
+                ur5_pose_1.orientation.w = angles[3]
+                ur5.go_to_pose(ur5_pose_1)
+                # flag = int(input("Close the gripper: "))
+                # if flag==1:
+                #     break
 
                 ur5_pose_1.position.z = trans[2]+z-0.075
                 ur5.go_to_pose(ur5_pose_1)
