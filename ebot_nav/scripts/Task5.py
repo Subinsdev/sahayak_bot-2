@@ -391,19 +391,18 @@ def main():
                 ( 8.5, 2.175, -0.6564, 0.7543), #Meeting Intermediate out CV
                 ( 8.638, 1.148, -0.6564, 0.7543), #Meeting Intermediate CV
 
-
                 (11.400, 10.010, -0.018, -1.00), #Reaserch DropBox along length
-                (14.2346, 10.1097, -0.011123, -0.9936), #Reaserch DropBox Intermediatie
-                (15.2, 4.4, -0.623, 0.781), # Research lab to store room Intermediate
+                (14.6, 10.1097, -0.011123, -0.9936), #Reaserch DropBox Intermediatie
+                (15.0, 3.9, -0.623, 0.781), # Research lab to store room Intermediate
                 #Object3
                 (26.165, -2.714, -0.891, 0.454),  #Store Pickup 1
-                (25.8179, -3.2344, -0.8869, 0.462), #Store Pickup 2
-                (25.8179, -3.2344, 0.894, -0.448), #Store Pickup 2 out
-                (15.5, 0.9, 1, 0.0), #Store Pickup 2 out
+                (25.189, -3.2344, -0.8869, 0.462), #Store Pickup 2
+                (25.189, -3.2344, 0.894, -0.448), #Store Pickup 2
+                (16.7, 1.0, 1, 0.0), #Store Pickup 2 out
                 ( 5.156, 0.861, -0.706, 0.7082), #Conference Intermediate CV
                 ( 5.070, -0.771, -0.9126, 0.4087), #Conference DropBox CV
                 ( 5.070, -0.771, -0.7794, -0.625), #Conference Intermediate out CV
-                ( 5.070, 0.5, -0.7794, -0.625), #Conference Intermediate out CV
+                ( 5.25, 0.65, -0.7794, -0.625), #Conference Intermediate out CV
                 #
                 (0,0,0,1)]                   #Start
 
@@ -449,9 +448,9 @@ def main():
             ur5_pose_1 = geometry_msgs.msg.Pose()
             trans = object_tranforms[5][0]
             if(i == 0):
-                x, y, z = 0.005, -0.177, 0.2
+                x, y, z = 0.005, -0.175, 0.2
             elif(i == 1):
-                x, y, z = 0.005, -0.177, 0.2
+                x, y, z = 0.005, -0.175, 0.2
             # x = float(input("Enter x: "))
             # y = float(input("Enter y: "))
             # z = float(input("Enter z: "))
@@ -503,9 +502,11 @@ def main():
                 ur5_pose_1 = geometry_msgs.msg.Pose()
                 trans = object_tranforms[5][0]
                 if(i == 0):
-                    x, y, z = 0.01, -0.175, 0.2
+                    x, y, z = 0.008, -0.174, 0.2
                 elif(i == 1):
-                    x, y, z = 0.01, -0.175, 0.2
+                    x, y, z = 0.008, -0.174, 0.2
+                if(object_ids[5] == 87):
+                    x, y, z = 0.005, -0.174, 0.2
                 # x = float(input("Enter x: "))
                 # y = float(input("Enter y: "))
                 # z = float(input("Enter z: "))
