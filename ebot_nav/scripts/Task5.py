@@ -395,9 +395,9 @@ def main():
                 (14.6, 10.1097, -0.011123, -0.9936), #Reaserch DropBox Intermediatie
                 (15.0, 3.9, -0.623, 0.781), # Research lab to store room Intermediate
                 #Object3
-                (26.165, -2.714, -0.891, 0.454),  #Store Pickup 1
-                (25.189, -3.2344, -0.8869, 0.462), #Store Pickup 2
-                (25.189, -3.2344, 0.894, -0.448), #Store Pickup 2
+                (25.965, -2.714, -0.891, 0.454),  #Store Pickup 1
+                (25.8179, -3.0344, -0.8869, 0.462), #Store Pickup 2
+                (25.8179, -3.0344, 0.894, -0.448), #Store Pickup 2
                 (16.7, 1.0, 1, 0.0), #Store Pickup 2 out
                 ( 5.156, 0.861, -0.706, 0.7082), #Conference Intermediate CV
                 ( 5.070, -0.771, -0.9126, 0.4087), #Conference DropBox CV
