@@ -19,6 +19,9 @@ from object_msgs.msg import ObjectPose
 from shape_msgs.msg import SolidPrimitive, Plane, Mesh, MeshTriangle
 import pyassimp
 
+import cv2
+import cv_bridge
+
 class Ur5Moveit:
 
     # Constructor
