@@ -416,13 +416,13 @@ def main():
                 #Object3
                 (26.065, -2.714, -0.891, 0.454),  #19  Store Pickup 1
                 (26.065, -2.714, 0.894, -0.448),  #20   Store Pickup 1 Orientation to Exit
-                (25.843, -3.044, -0.871, 0.490), #21   Store Pickup 2
-                (25.843, -3.044, 0.894, -0.448), #22    Store Pickup 2 Orientation to Exit
+                (25.8, -3.2, -0.871, 0.490), #21   Store Pickup 2
+                (25.8, -3.2, 0.894, -0.448), #22    Store Pickup 2 Orientation to Exit
                 (16.7, 1.0, 1, 0.0), #23   Store Pickup 2 out
                 ( 5.156, 0.861, -0.706, 0.7082), #24   Conference Intermediate CV
-                ( 5.070, -0.771, -0.9126, 0.4087), #25  Conference DropBox CV
-                ( 5.070, -0.771, -0.7794, -0.625), #26  Conference Intermediate out CV
-                ( 5.25, 0.65, -0.7794, -0.625), #27   Conference Intermediate out CV
+                ( 5.070, -0.7, -0.9126, 0.4087), #25  Conference DropBox CV
+                ( 5.070, -0.7, -0.7583, -0.6518), #26  Conference Intermediate out CV
+                ( 5.25, 0.65, -0.7583, -0.6518), #27   Conference Intermediate out CV
                 #
                 (0,0,0,1)]                   #28Start
 
@@ -438,7 +438,7 @@ def main():
         #     break
         # rospy.sleep(2)
     print("Success")
-
+    '''
     # Moving to Table 1
     for i in range(5):
         movebase_client(way_points[i]) #going to goal locations
@@ -648,6 +648,8 @@ def main():
 
     movebase_client(way_points[17])
     movebase_client(way_points[18])
+    '''
+    movebase_client(way_points[0])
     movebase_client(way_points[19])
 
     ##### FPGA ######
@@ -660,7 +662,7 @@ def main():
         print(object_ids)
         print(object_tranforms)
         print("Adding deteced objects in rviz")
-        add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
+        # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
         print("Done")
         if object_ids[2]!=-1:
             print("Found object_", object_ids[2])
@@ -670,11 +672,11 @@ def main():
             #rot_angle = float(input("Enter rotation: "))
             x, y, z = -0.09, -0.195, 0.19
             if object_ids[2]==75:
-                x, y, z = -0.11, -0.205, 0.19
+                x, y, z = -0.11, -0.20, 0.19
             elif object_ids[2]==73:
-                x, y, z = -0.1, -0.195, 0.21
+                x, y, z = -0.1, -0.19, 0.21
             elif object_ids[2]==88:
-                x, y, z = -0.08, -0.16, 0.19
+                x, y, z = -0.077, -0.145, 0.19
 
             ur5_pose_1 = geometry_msgs.msg.Pose()
             trans = object_tranforms[2][0]
@@ -693,14 +695,14 @@ def main():
             # flag = int(input("Close the gripper: "))
             # if flag==1:
             #     break
-            ur5.closeGripper(0.195)
+            ur5.closeGripper(0.21)
             ur5.go_to_joint([0.56, -0.37, -0.785, -1, -0.65, 1.57])
-            remove_detected_objects_mesh_in_rviz(object_ids)
+            # remove_detected_objects_mesh_in_rviz(object_ids)
             movebase_client(way_points[20])
             break
 
     ur5.go_to_joint(lst_joint_angles_2)
-    
+
     if object_ids[2]==-1:
         ur5.go_to_joint(lst_joint_angles_2)
         movebase_client(way_points[21])
@@ -721,7 +723,7 @@ def main():
                 # y = float(input("Enter y: "))
                 # z = float(input("Enter z: "))
                 #rot_angle = float(input("Enter rotation: "))
-                x, y, z = -0.08, -0.16, 0.19
+                x, y, z = -0.08, -0.16, 0.2
                 ur5_pose_1 = geometry_msgs.msg.Pose()
                 trans = object_tranforms[2][0]
                 ur5_pose_1.position.x = trans[0]+x
@@ -733,7 +735,7 @@ def main():
                 ur5_pose_1.orientation.z = angles[2]
                 ur5_pose_1.orientation.w = angles[3]
                 ur5.go_to_pose(ur5_pose_1)
-    
+
                 ur5_pose_1.position.z = trans[2]+0.155
                 ur5.go_to_pose(ur5_pose_1)
                 # flag = int(input("Close the gripper: "))
@@ -742,31 +744,31 @@ def main():
                 ur5.closeGripper(0.195)
                 ur5.go_to_joint([0.56, -0.37, -0.785, -1, -0.65, 1.57])
                 # ur5.go_to_joint(lst_joint_angles_2)
-                remove_detected_objects_mesh_in_rviz(object_ids)
+                # remove_detected_objects_mesh_in_rviz(object_ids)
                 movebase_client(way_points[22])
                 break
-    
-    
+
+
     ur5.go_to_joint(lst_joint_angles_2)
-    
+
     for i in range(23,26):
         movebase_client(way_points[i])
-    
+
     #Conference room joint angles for dropping
-    state=[0, 0, -0.8, 0, 0, 0]
+    state=[0, 0, -0.8, 0, 1.36, 0]
     ur5.go_to_joint(state)
-    
-    state=[0.6, 0, -0.8, 0, 0, 0]
+
+    state=[0.6, 0, -0.8, 0, 0.5, 0]
     ur5.go_to_joint(state)
-    
+
     print("Opening gripper")
     ur5.openGripper()
-    
+
     state=[0, 0, -0.8, 0, 0, 0]
     ur5.go_to_joint(state)
-    
+
     ur5.go_to_joint(lst_joint_angles_1)
-    
+
     movebase_client(way_points[26])
     movebase_client(way_points[27])
     movebase_client(way_points[28])
