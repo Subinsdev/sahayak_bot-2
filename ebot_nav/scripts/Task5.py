@@ -286,14 +286,14 @@ def add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms):
     obj.pose.orientation.z = angles[2]
     obj.pose.orientation.w = angles[3]
     names = ["wheels", "eyfi", "fpga", "battery", "glue", "coke", "adhesive", "glass"]
-    paths = ["/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/robot_wheels/meshes/robot_wheels.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/eYIFI/meshes/eyifi.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/biscuits/meshes/biscuits.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/soap2/meshes/soap2.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/glue/meshes/glue.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/coke_can/meshes/coke_can.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/adhesive/meshes/adhesive.dae",
-    "/home/shadowfox/ws_eyantra/src/sahayak_bot/ebot_gazebo/models/water_glass/meshes/glass.dae"]
+    paths = ["/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/robot_wheels/meshes/robot_wheels.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/eYIFI/meshes/eyifi.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/biscuits/meshes/biscuits.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/soap2/meshes/soap2.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/glue/meshes/glue.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/coke_can/meshes/coke_can.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/adhesive/meshes/adhesive.dae",
+    "/home/chandravaran/catkin_ws/src/sahayak_bot/ebot_gazebo/models/water_glass/meshes/glass.dae"]
     scale = [(1, 1, 1), (0.1, 0.1, 0.1), (1, 1, 1), (1, 1, 1), (0.1, 0.1, 0.1), (0.1, 0.1, 0.1), (1, 1, 1), (1, 1, 1)]
     for i in range(len(object_ids)):
         if object_ids[i]!=-1:
@@ -395,9 +395,9 @@ def main():
                 (14.6, 10.1097, -0.011123, -0.9936), #Reaserch DropBox Intermediatie
                 (15.0, 3.9, -0.623, 0.781), # Research lab to store room Intermediate
                 #Object3
-                (25.965, -2.714, -0.891, 0.454),  #Store Pickup 1
-                (25.8179, -3.0344, -0.8869, 0.462), #Store Pickup 2
-                (25.8179, -3.0344, 0.894, -0.448), #Store Pickup 2
+                (26.065, -2.714, -0.891, 0.454),  #Store Pickup 1
+                (25.8179, -3.1344, -0.8869, 0.462), #Store Pickup 2
+                (25.8179, -3.1344, 0.894, -0.448), #Store Pickup 2
                 (16.7, 1.0, 1, 0.0), #Store Pickup 2 out
                 ( 5.156, 0.861, -0.706, 0.7082), #Conference Intermediate CV
                 ( 5.070, -0.771, -0.9126, 0.4087), #Conference DropBox CV
@@ -451,6 +451,8 @@ def main():
                 x, y, z = 0.005, -0.175, 0.2
             elif(i == 1):
                 x, y, z = 0.005, -0.175, 0.2
+            if(object_ids[5]==44):
+                x = 0
             # x = float(input("Enter x: "))
             # y = float(input("Enter y: "))
             # z = float(input("Enter z: "))
@@ -470,7 +472,7 @@ def main():
             ur5_pose_1.position.z = trans[2]+z-0.07
             ur5.go_to_pose(ur5_pose_1)
 
-            ur5.closeGripper(0.245)
+            ur5.closeGripper(0.235)
             ur5.go_to_joint(states[i])
             remove_detected_objects_mesh_in_rviz(object_ids)
             break
@@ -526,7 +528,7 @@ def main():
                 ur5_pose_1.position.z = trans[2]+z-0.07
                 ur5.go_to_pose(ur5_pose_1)
 
-                ur5.closeGripper(0.26)
+                ur5.closeGripper(0.235)
                 ur5.go_to_joint(states[i])
                 remove_detected_objects_mesh_in_rviz(object_ids)
                 ur5.go_to_joint(lst_joint_angles_2)
@@ -542,17 +544,17 @@ def main():
     # ur5.go_to_joint(state)
 
     #Metting room dropbox locations
-    state=[0, 0.23, -1.22, 0, 1.36, 0]
+    state=[-0.2, 0.23, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
 
-    state=[1.13, 0.4, -1.22, 0, 1.36, 0]
+    state=[1.13, 0.4, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
 
     #dropping the coke can
     print("Opening gripper")
     ur5.openGripper()
 
-    state=[0, 0.23, -1.22, 0, 1.36, 0]
+    state=[-0.2, 0.23, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
 
 
@@ -578,7 +580,7 @@ def main():
                 print("Found object_", object_ids[4])
                 ur5_pose_1 = geometry_msgs.msg.Pose()
                 trans = object_tranforms[4][0]
-                x, y, z = 0.007, - 0.18, + 0.2
+                x, y, z = 0.007, - 0.185, + 0.2
                 # x = float(input("Enter x: "))
                 # y = float(input("Enter y: "))
                 # z = float(input("Enter z: "))
@@ -598,7 +600,7 @@ def main():
                 ur5_pose_1.position.z = trans[2]+z-0.075
                 ur5.go_to_pose(ur5_pose_1)
 
-                ur5.closeGripper(0.31)
+                ur5.closeGripper(0.315)
                 ur5.go_to_joint(states[i])
                 remove_detected_objects_mesh_in_rviz(object_ids)
                 break
@@ -610,17 +612,17 @@ def main():
     movebase_client(way_points[17])
 
     # Research lab drop box
-    state=[0, 0, -1.22, 0, 0.96, 0.4]
+    state=[0, 0, -1.22, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
 
-    state=[-1.47, 0, -1.22, 0, 0.96, 0.4]
+    state=[-1.6, 0, -1.22, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
 
     #dropping the glue
     print("Opening gripper")
     ur5.openGripper()
 
-    state=[0, 0, -1.22, 0, 0.96, 0.4]
+    state=[0, 0, -1.22, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
 
     ur5.go_to_joint(lst_joint_angles_1)
