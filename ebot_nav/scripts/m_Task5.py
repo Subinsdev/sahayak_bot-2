@@ -414,19 +414,14 @@ def main():
                 (14.6, 10.1097, -0.011123, -0.9936), #17  Reaserch DropBox Intermediatie
                 (15.0, 3.9, -0.623, 0.781), #18   Research lab to store room Intermediate
                 #Object3
-                #Object3
-                # (26.065, -2.714, -0.891, 0.454),  #19  Store Pickup 1
-                # (26.065, -2.714, 0.894, -0.448),  #20   Store Pickup 1 Orientation to Exit
+                (26.065, -2.714, -0.891, 0.454),  #19  Store Pickup 1
+                (26.065, -2.714, 0.894, -0.42),  #20   Store Pickup 1 Orientation to Exit
                 # (25.8, -3.2, -0.871, 0.490), #21   Store Pickup 2
                 # (25.8, -3.2, 0.894, -0.448), #22    Store Pickup 2 Orientation to Exit
-                # (16.7, 1.0, 1, 0.0), #23   Store Pickup 2 out
+                (25.8179, -3.3344, -0.871, 0.490), #21   Store Pickup 2
+                (25.8179, -3.3344, 0.894, -0.448), #22    Store Pickup 2 Orientation to Exit
 
-                (25.965, -2.914, -0.891, 0.454),  #19  Store Pickup 1
-                (25.965, -2.914, 0.894, -0.448),  #20   Store Pickup 1 Orientation to Exit
-                (25.8179, -3.2344, -0.871, 0.490), #21   Store Pickup 2
-                (25.8179, -3.2344, 0.894, -0.448), #22    Store Pickup 2 Orientation to Exit
                 (16.7, 1.0, 1, 0.0), #23   Store Pickup 2 out
-
                 ( 5.156, 0.861, -0.706, 0.7082), #24   Conference Intermediate CV
                 ( 5.070, -0.7, -0.9126, 0.4087), #25  Conference DropBox CV
                 ( 5.070, -0.7, -0.7583, -0.6518), #26  Conference Intermediate out CV
@@ -446,21 +441,19 @@ def main():
         #     break
         # rospy.sleep(2)
     print("Success")
-    '''
-    # Moving to Table 1
-    for i in range(5):
-        movebase_client(way_points[i]) #going to goal locations
+    movebase_client(way_points[0])
 
+    # Moving to Table 1
+    for i in range(1,5):
+        movebase_client(way_points[i]) #going to goal locations
     # coke table left up position
     state=[-0.4, 0.0, 0.0, 0, 0, 0]
     ur5.go_to_joint(state)
-
     #Finding Coke
     # object_ids, object_tranforms  = findObjects()
     # print(object_ids)
     #
-    states=[[-0.07, -0.37, -0.785, -1, -0.8, 1.57], [-0.2, -0.37, -0.785, -1, -0.8, 1.57]]
-
+    states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57], [-0.2, -0.37, -0.785, -1, -0.8, 1.57]]
     for i in range(len(states)):
         ur5.go_to_joint(states[i])
         object_ids, object_tranforms  = findObjects()
@@ -496,26 +489,20 @@ def main():
             # flag = int(input("Close the gripper: "))
             # if flag==1:
             #     break
-
             ur5_pose_1.position.z = trans[2]+z-0.07
             ur5.go_to_pose(ur5_pose_1)
-
             ur5.closeGripper(0.235)
             ur5.go_to_joint(states[i])
             # remove_detected_objects_mesh_in_rviz(object_ids)
             break
-
     ur5.go_to_joint(lst_joint_angles_2)
-
     if object_ids[5] == -1:
         ur5.go_to_joint(lst_joint_angles_1)
         movebase_client(way_points[5])
         movebase_client(way_points[6])
         state=[-0.4, 0.0, 0.0, 0, 0, 0]
         ur5.go_to_joint(state)
-
         states=[[-0.07, -0.27, -0.785, -1, -0.8, 1.57], [-0.2, -0.27, -0.785, -1, -0.8, 1.57]]
-
         for i in range(len(states)):
             ur5.go_to_joint(states[i])
             object_ids, object_tranforms  = findObjects()
@@ -535,7 +522,7 @@ def main():
                 elif(i == 1):
                     x, y, z = 0.008, -0.174, 0.2
                 if(object_ids[5] == 87):
-                    x, y, z = 0.005, -0.174, 0.2
+                    x, y, z = -0.01, -0.174, 0.2
                 # x = float(input("Enter x: "))
                 # y = float(input("Enter y: "))
                 # z = float(input("Enter z: "))
@@ -551,48 +538,34 @@ def main():
                 # flag = int(input("Close the gripper: "))
                 # if flag==1:
                 #     break
-
                 ur5_pose_1.position.z = trans[2]+z-0.07
                 ur5.go_to_pose(ur5_pose_1)
-
                 ur5.closeGripper(0.235)
                 ur5.go_to_joint(states[i])
                 # remove_detected_objects_mesh_in_rviz(object_ids)
                 ur5.go_to_joint(lst_joint_angles_2)
                 movebase_client(way_points[7])
                 break
-
     ur5.go_to_joint(lst_joint_angles_2)
-
     for i in range(8,13):
         movebase_client(way_points[i])
-
     # state = [-0.05, -0.37, -0.785, -1, -0.8, 1.57]
     # ur5.go_to_joint(state)
-
     #Metting room dropbox locations
     state=[-0.2, 0.23, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
-
     state=[1.13, 0.4, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
-
     #dropping the coke can
     print("Opening gripper")
     ur5.openGripper()
-
     state=[-0.2, 0.23, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
-
-
     ur5.go_to_joint(lst_joint_angles_1)
-
     #Meeting room pickup
     movebase_client(way_points[13])
-
     #Picking up glue
     states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57]]
-
     for i in range(len(states)):
             ur5.go_to_joint(states[i])
             object_ids, object_tranforms  = findObjects()
@@ -623,47 +596,35 @@ def main():
                 # flag = int(input("Close the gripper: "))
                 # if flag==1:
                 #     break
-
                 ur5_pose_1.position.z = trans[2]+z-0.075
                 ur5.go_to_pose(ur5_pose_1)
-
-                ur5.closeGripper(0.315)
+                ur5.closeGripper(0.32)
                 ur5.go_to_joint(states[i])
                 # remove_detected_objects_mesh_in_rviz(object_ids)
                 break
-
     ur5.go_to_joint(lst_joint_angles_2)
-
     movebase_client(way_points[14])
     movebase_client(way_points[15])
     movebase_client(way_points[16])
-
     # Research lab drop box
     state=[0, 0, -1.22, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
-
     state=[-1.6, 0, -1.22, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
-
     #dropping the glue
     print("Opening gripper")
     ur5.openGripper()
-
     state=[0, 0, -1.22, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
-
     ur5.go_to_joint(lst_joint_angles_1)
-
     movebase_client(way_points[17])
     movebase_client(way_points[18])
-    '''
-    movebase_client(way_points[0])
+
     movebase_client(way_points[19])
 
     ##### FPGA ######
     #################LEFT SIDE############################
-    states=[[0, -0.37, -0.785, -1, -0.52, 1.57], [1.4078444825821474, -0.7018332050192164, -0.4384690878890867, -2.00407912757489, -1.4595990947563475, 3.0065243279019747]]
-    # states=[[0, -0.37, -0.785, -1, -0.52, 1.57], [0.56, -0.37, -0.785, -1, -0.65, 1.57]]
+    states=[[0, -0.37, -0.785, -1, -0.52, 1.57], [0.56, -0.37, -0.785, -1, -0.65, 1.57]]
     for state in states:
         ur5.go_to_joint(state)
         object_ids, object_tranforms  = findObjects()
@@ -681,15 +642,11 @@ def main():
             #rot_angle = float(input("Enter rotation: "))
             x, y, z = -0.09, -0.195, 0.19
             if object_ids[2]==75:
-                x, y, z = -0.11, -0.205, 0.19
+                x, y, z = -0.11, -0.20, 0.19
             elif object_ids[2]==73:
-                x, y, z = -0.1, -0.195, 0.19 # 0.22
+                x, y, z = -0.1, -0.19, 0.21
             elif object_ids[2]==88:
-                x, y, z = -0.08, -0.16, 0.19  #Sai
-                # x, y, z = -0.077, -0.145, 0.2
-            elif (object_ids[2] == 70):
-                x, y, z = -0.06, -0.16, 0.19  #Sai
-
+                x, y, z = -0.077, -0.145, 0.19
 
             ur5_pose_1 = geometry_msgs.msg.Pose()
             trans = object_tranforms[2][0]
@@ -708,10 +665,8 @@ def main():
             # flag = int(input("Close the gripper: "))
             # if flag==1:
             #     break
-            ur5.closeGripper(0.22)
-            ur5_pose_1.position.z = trans[2]+0.19
-            ur5.go_to_pose(ur5_pose_1)
-            ur5.go_to_joint([0.56, -0.37, -0.785, -1, -0.65, 1.57])
+            ur5.closeGripper(0.21)
+            ur5.go_to_joint([-0.1, -0.37, -0.785, -1, -0.65, 1.57])
             # remove_detected_objects_mesh_in_rviz(object_ids)
             movebase_client(way_points[20])
             break
@@ -722,8 +677,6 @@ def main():
         ur5.go_to_joint(lst_joint_angles_2)
         movebase_client(way_points[21])
         #################RIGHT SIDE##################
-        states=[[0, -0.37, -0.785, -1, -0.52, 1.57], [1.4078444825821474, -0.7018332050192164, -0.4384690878890867, -2.00407912757489, -1.4595990947563475, 3.0065243279019747]]
-
         states=[[0, -0.37, -0.785, -1, -0.52, 1.57]]
         for state in states:
             ur5.go_to_joint(state)
@@ -740,7 +693,9 @@ def main():
                 # y = float(input("Enter y: "))
                 # z = float(input("Enter z: "))
                 #rot_angle = float(input("Enter rotation: "))
-                x, y, z = -0.15, -0.2, 0.2
+                x, y, z = -0.08, -0.16, 0.2
+                if(object_ids[2] == 70):
+                    x, y, z = -0.06, -0.16, 0.2
                 ur5_pose_1 = geometry_msgs.msg.Pose()
                 trans = object_tranforms[2][0]
                 ur5_pose_1.position.x = trans[0]+x
@@ -759,7 +714,7 @@ def main():
                 # if flag==1:
                 #     break
                 ur5.closeGripper(0.195)
-                ur5.go_to_joint([0.56, -0.37, -0.785, -1, -0.65, 1.57])
+                ur5.go_to_joint([-0.1, -0.37, -0.785, -1, -0.65, 1.57])
                 # ur5.go_to_joint(lst_joint_angles_2)
                 # remove_detected_objects_mesh_in_rviz(object_ids)
                 movebase_client(way_points[22])
