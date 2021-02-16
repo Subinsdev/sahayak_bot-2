@@ -451,8 +451,8 @@ def main():
         if i == 3:
             print("Entered the Pantry")
     # coke table left up position
-    state=[-0.4, 0.0, 0.0, 0, 0, 0]
-    ur5.go_to_joint(state)
+    # state=[-0.4, 0.0, 0.0, 0, 0, 0]
+    # ur5.go_to_joint(state)
     #Finding Coke
     # object_ids, object_tranforms  = findObjects()
     # print(object_ids)
@@ -512,8 +512,8 @@ def main():
         ur5.go_to_joint(lst_joint_angles_1)
         movebase_client(way_points[5])
         movebase_client(way_points[6])
-        state=[-0.4, 0.0, 0.0, 0, 0, 0]
-        ur5.go_to_joint(state)
+        # state=[-0.4, 0.0, 0.0, 0, 0, 0]
+        # ur5.go_to_joint(state)
         states=[[-0.07, -0.27, -0.785, -1, -0.8, 1.57], [-0.2, -0.27, -0.785, -1, -0.8, 1.57]]
         for i in range(len(states)):
             ur5.go_to_joint(states[i])
@@ -562,6 +562,9 @@ def main():
                 ur5.go_to_joint(lst_joint_angles_2)
                 movebase_client(way_points[7])
                 break
+    
+    if object_ids[5]==-1:
+        movebase_client(way_points[7])
 
     ur5.go_to_joint(lst_joint_angles_2)
     for i in range(8,13):
