@@ -226,13 +226,13 @@ def findObjects():
     listener = tf.TransformListener()
     return_object_id = [-1]*8
     return_object_tranform = [0]*8
-    rate = rospy.Rate(10.0)
+    rate = rospy.Rate(20.0)
     obj_name = '/object_'
-    object_ids = [[59, 71, 78,89], [57, 74, 76, 82], [55, 70, 73, 75, 83 ,88], [56, 41, 80], [58, 43, 64,85], [44, 68,69,84,87,90], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67,91]]
+    object_ids = [[59, 71, 78, 89, 94, 97, 99], [57, 74, 76, 82], [55, 70, 73, 75, 83, 88], [56, 41, 80, 98], [58, 43, 64, 85, 93, 96], [44, 68, 84, 87, 90], [42, 72, 81, 86, 92, 95, 100], [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]
     #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
     start_time = time.time()
     end_time = time.time()
-    while end_time-start_time<5:
+    while end_time-start_time<1.4:
         for i in range(len(object_ids)):
             for j in range(len(object_ids[i])):
                 obj_id = obj_name + str(object_ids[i][j])
@@ -333,7 +333,7 @@ def showDetectedObjects(msg):
     data = msg.objects.data
     detected_objects_image = image.copy()
     names = ["Wheels", "EYFI", "FPGA", "Battery", "Glue", "Coke", "Adhesive", "Glass"]
-    object_ids = [[59, 71, 78,89], [57, 74, 76, 82], [55, 70, 73, 75, 83 ,88], [56, 41, 80], [58, 43, 64,85], [44, 68,69,84,87,90], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67,91]]
+    object_ids = [[59, 71, 78, 89, 94, 97, 99], [57, 74, 76, 82], [55, 70, 73, 75, 83, 88], [56, 41, 80, 98], [58, 43, 64, 85, 93, 96], [44, 68, 84, 87, 90], [42, 72, 81, 86, 92, 95, 100], [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]
     detected = {}
     for i in range(0, len(data), 12):
         idx = int(data[i])
@@ -410,7 +410,7 @@ def main():
                 ( 8.5, 2.175, -0.7068, 0.7073), #14   Meeting Intermediate out CV
                 ( 8.638, 1.148, -0.7068, 0.7073), #15   Meeting Intermediate CV
 
-                (11.400, 10.010, -0.018, -1.00), #16  Reaserch DropBox along length
+                (11.200, 10.010, -0.018, -1.00), #16  Reaserch DropBox along length
                 (14.6, 10.1097, -0.011123, -0.9936), #17  Reaserch DropBox Intermediatie
                 (15.0, 3.9, -0.623, 0.781), #18   Research lab to store room Intermediate
                 #Object3
@@ -426,9 +426,9 @@ def main():
                 ( 5.18, 0.1, -0.7583, -0.6518), #27   Conference Intermediate out CV 1
                 ( 5.25, 0.65, -0.7583, -0.6518), #27   Conference Intermediate out CV 2
                 #
-                (0,0,0,1)]                   #28Start
+                (0,0,-0.719, -0.694)]                   #28Start
 
-    names = ["wheels", "eyfi", "fpga", "battery", "glue", "coke", "adhesive", "glass"]
+    names = ["Wheels", "EYFI", "FPGA", "Battery", "Glue", "Coke", "Adhesive", "Glass"]
 
     lst_joint_angles_1 = [-0.4, 0.74, 0.31, -0.02, -0.96, -0.02] #[0, 1.08, 0.37, 0, 0, 0]
     lst_joint_angles_2 = [-0.5, 0.74, 0.31, -0.02, -0.96, -0.02] #[0, 1.08, 0.37, 0, 0, 0]
@@ -441,14 +441,14 @@ def main():
         #     # pub1.publish(obj)
         #     break
         # rospy.sleep(2)
-    print("Success")
+    print("Started Run!!")
     movebase_client(way_points[0])
 
     # Moving to Table 1
     for i in range(1,5):
         movebase_client(way_points[i]) #going to goal locations
         if i == 3:
-            print("Entered the Pantry")
+            print("Pantry Reached!!")
     # coke table left up position
     # state=[-0.4, 0.0, 0.0, 0, 0, 0]
     # ur5.go_to_joint(state)
@@ -462,7 +462,7 @@ def main():
         object_ids, object_tranforms  = findObjects()
         for j  in range(8):
             if object_ids[j] != -1:
-                print(names[j],"Identified")
+                print(str(names[j]) + " Identified")
         # print(object_ids)
         # print(object_tranforms)
         print("Adding deteced objects in rviz")
@@ -501,9 +501,9 @@ def main():
             #     break
             ur5_pose_1.position.z = trans[2]+z-0.07
             ur5.go_to_pose(ur5_pose_1)
-            ur5.closeGripper(0.24)
+            ur5.closeGripper(0.238)
             ur5.go_to_joint(states[i])
-            print(names[5],"Picked")
+            print(str(names[5]) + " Picked")
             # remove_detected_objects_mesh_in_rviz(object_ids)
             break
     ur5.go_to_joint(lst_joint_angles_2)
@@ -519,7 +519,7 @@ def main():
             object_ids, object_tranforms  = findObjects()
             for j  in range(8):
                 if object_ids[j] != -1:
-                    print(names[j],"Identified")
+                    print(str(names[j]) + " Identified")
             # print(object_ids)
             # print(object_tranforms)
             print("Adding deteced objects in rviz")
@@ -557,10 +557,10 @@ def main():
                 #     break
                 ur5_pose_1.position.z = trans[2]+z-0.07
                 ur5.go_to_pose(ur5_pose_1)
-                ur5.closeGripper(0.24)
+                ur5.closeGripper(0.238)
                 ur5.go_to_joint(states[i])
                 # remove_detected_objects_mesh_in_rviz(object_ids)
-                print(names[5],"Picked")
+                print(str(names[5])+ " Picked")
                 ur5.go_to_joint(lst_joint_angles_2)
                 movebase_client(way_points[7])
                 break
@@ -572,7 +572,7 @@ def main():
     for i in range(8,13):
         movebase_client(way_points[i])
         if i == 11:
-            print("Entered the Meeting Room")
+            print("Meeting Room Reached!!")
     # state = [-0.05, -0.37, -0.785, -1, -0.8, 1.57]
     # ur5.go_to_joint(state)
     #Metting room dropbox locations
@@ -583,7 +583,7 @@ def main():
     #dropping the coke can
     print("Opening gripper")
     ur5.openGripper()
-    print(names[5],"Dropped in Dropbox 2")
+    print(str(names[5]) + " Dropped in Dropbox 2")
     state=[-0.2, 0.23, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
     ur5.go_to_joint(lst_joint_angles_1)
@@ -596,7 +596,7 @@ def main():
             object_ids, object_tranforms  = findObjects()
             for j  in range(8):
                 if object_ids[j] != -1:
-                    print(names[j],"Identified")
+                    print(str(names[j]) + " Identified")
 
             # print(object_ids)
             # print(object_tranforms)
@@ -630,9 +630,9 @@ def main():
                 ur5_pose_1.position.z = trans[2]+z-0.075
                 ur5.go_to_pose(ur5_pose_1)
                 ur5.closeGripper(0.33)
-                print(names[4],"Picked")
+                print(str(names[4])+" Picked")
                 ur5.go_to_joint([0.05, -0.37, -0.785, -1, -0.8, 1.57])
-                ur5.go_to_joint(states[i])
+                # ur5.go_to_joint(states[i])
                 # remove_detected_objects_mesh_in_rviz(object_ids)
                 break
 
@@ -640,16 +640,16 @@ def main():
     movebase_client(way_points[14])
     movebase_client(way_points[15])
     movebase_client(way_points[16])
-    print("Entered the Research Room")
+    print("Research Room Reached!!")
     # Research lab drop box
     state=[0, 0, -1.22, -1, 0, 1.57]
     ur5.go_to_joint(state)
-    state=[-1.75, 0.4, -1.32, -1, 0, 1.57]
+    state=[-1.55, 0.2, -1.32, -1, 0, 1.57]
     ur5.go_to_joint(state)
     #dropping the glue
     print("Opening gripper")
     ur5.openGripper()
-    print(names[4],"Dropped in Dropbox 3")
+    print(str(names[4]) + " Dropped in Dropbox 3")
     state=[0, 0, -1.22, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
     ur5.go_to_joint(lst_joint_angles_1)
@@ -657,7 +657,7 @@ def main():
     movebase_client(way_points[18])
 
     movebase_client(way_points[19])
-    print("Entered the Store Room")
+    print("Store Room Reached!!")
 
     ##### FPGA ######
     #################LEFT SIDE############################
@@ -667,14 +667,14 @@ def main():
         object_ids, object_tranforms  = findObjects()
         for j  in range(8):
             if object_ids[j] != -1:
-                print(names[j],"Identified")
+                print(str(names[j]) + "Identified")
 
         #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
         # print(object_ids)
         # print(object_tranforms)
         print("Adding deteced objects in rviz")
         # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
-        print("Done")
+        # print("Done")
         if object_ids[2]!=-1:
             print("Found object_", object_ids[2])
             # x = float(input("Enter x: "))
@@ -711,7 +711,7 @@ def main():
             ur5.closeGripper(0.21)
             ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
             ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
-            print(names[2],"Picked")
+            print(str(names[2]) + " Picked")
             ur5.go_to_joint(lst_joint_angles_2)
             # remove_detected_objects_mesh_in_rviz(object_ids)
             movebase_client(way_points[20])
@@ -727,7 +727,7 @@ def main():
             object_ids, object_tranforms  = findObjects()
             for j in range(8):
                 if object_ids[j] != -1:
-                    print(names[j],"Identified")
+                    print(str(names[j]) + " Identified")
 
             #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
             # print(object_ids)
@@ -764,20 +764,20 @@ def main():
                 ur5.closeGripper(0.195)
                 ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
                 ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
-                print(names[2],"Picked")
+                print(str(names[2])+ " Picked")
                 ur5.go_to_joint(lst_joint_angles_2)
                 # remove_detected_objects_mesh_in_rviz(object_ids)
                 movebase_client(way_points[22])
                 break
 
     if(object_ids[2]!=-1):
-        ur5.go_to_joint(lst_joint_angles_2)
-        movebase_client(way_points[22])
+        ur5.go_to_joint(lst_joint_angles_1)
+        # movebase_client(way_points[22])
 
     for i in range(23,26):
         movebase_client(way_points[i])
 
-    print("Entered the Store Room")
+    print("Conference room Reached!!")
     #Conference room joint angles for dropping
     state=[0, 0, -0.8, 0, 1.36, 0]
     ur5.go_to_joint(state)
@@ -787,7 +787,7 @@ def main():
 
     print("Opening gripper")
     ur5.openGripper()
-    print(names[2],"Dropped in Dropbox 1")
+    print(str(names[2]) + " Dropped in Dropbox 1")
 
     state=[0, 0, -0.8, 0, 0, 0]
     ur5.go_to_joint(state)
@@ -800,7 +800,7 @@ def main():
     movebase_client(way_points[29])
     # movebase_client(way_points[30])
     cv2.destroyAllWindows()
-
+    print("Start Point Reached!!")
     print("Mission Accomplished")
     del ur5
 

@@ -228,7 +228,7 @@ def findObjects():
     return_object_tranform = [0]*8
     rate = rospy.Rate(10.0)
     obj_name = '/object_'
-    object_ids = [[59, 71, 78], [57, 74, 76, 82], [55, 70, 73, 75, 83 ,88], [56, 41, 80], [58, 43, 64,85], [44, 68,69,84,87], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
+    object_ids = [[59, 71, 78, 89, 94, 97, 99], [57, 74, 76, 82], [55, 70, 73, 75, 83, 88], [56, 41, 80, 98], [58, 43, 64, 85, 93, 96], [44, 68, 84, 87, 91], [42, 72, 81, 86, 92, 95, 100], [45, 48, 49, 50, 51, 52, 53, 66, 67, 90]]
     #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
     start_time = time.time()
     end_time = time.time()
@@ -333,7 +333,7 @@ def showDetectedObjects(msg):
     data = msg.objects.data
     detected_objects_image = image.copy()
     names = ["Wheels", "EYFI", "FPGA", "Battery", "Glue", "Coke", "Adhesive", "Glass"]
-    object_ids = [[59, 71, 78], [57, 74, 76, 82], [55, 70, 73, 75, 83, 88], [56, 41, 80], [58, 43, 64, 85], [44, 68, 84, 87], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
+    object_ids = [[59, 71, 78, 89, 94, 97, 99], [57, 74, 76, 82], [55, 70, 73, 75, 83, 88], [56, 41, 80, 98], [58, 43, 64, 85, 93, 96], [44, 68, 84, 87, 91], [42, 72, 81, 86, 92, 95, 100], [45, 48, 49, 50, 51, 52, 53, 66, 67, 90]]
     detected = {}
     for i in range(0, len(data), 12):
         idx = int(data[i])
