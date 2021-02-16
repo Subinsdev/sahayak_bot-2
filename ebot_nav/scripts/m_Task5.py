@@ -428,6 +428,7 @@ def main():
                 ( 5.25, 0.65, -0.7583, -0.6518), #27   Conference Intermediate out CV
                 #
                 (0,0,0,1)]                   #28Start
+    names = ["Wheels", "EYFI", "FPGA", "Battery", "Glue", "Coke", "Adhesive", "Glass"]
 
     lst_joint_angles_1 = [-0.4, 0.74, 0.31, -0.02, -0.96, -0.02] #[0, 1.08, 0.37, 0, 0, 0]
     lst_joint_angles_2 = [-0.5, 0.74, 0.31, -0.02, -0.96, -0.02] #[0, 1.08, 0.37, 0, 0, 0]
@@ -446,6 +447,8 @@ def main():
     # Moving to Table 1
     for i in range(1,5):
         movebase_client(way_points[i]) #going to goal locations
+        if i==4:
+            print("Pantry reached")
     # coke table left up position
     state=[-0.4, 0.0, 0.0, 0, 0, 0]
     ur5.go_to_joint(state)
@@ -457,6 +460,9 @@ def main():
     for i in range(len(states)):
         ur5.go_to_joint(states[i])
         object_ids, object_tranforms  = findObjects()
+        for i in range(8):
+            if object_ids[i]!=-1:
+                print(names[i], "Identified")
         print(object_ids)
         print(object_tranforms)
         print("Adding deteced objects in rviz")
@@ -474,9 +480,12 @@ def main():
                 x, y, z = 0.005, -0.175, 0.2
             if(object_ids[5]==44):
                 x = 0
+            elif(object_ids[5]==69):
+                x = 0.008
             # x = float(input("Enter x: "))
             # y = float(input("Enter y: "))
             # z = float(input("Enter z: "))
+            s = float(input("Enter stall: "))
             ur5_pose_1.position.x = trans[0]+x
             ur5_pose_1.position.y = trans[1]+y
             ur5_pose_1.position.z = trans[2]+z
@@ -506,6 +515,9 @@ def main():
         for i in range(len(states)):
             ur5.go_to_joint(states[i])
             object_ids, object_tranforms  = findObjects()
+            for i in range(8):
+                if object_ids[i]!=-1:
+                    print(names[i], "Identified")
             print(object_ids)
             print(object_tranforms)
             print("Adding deteced objects in rviz")
@@ -523,7 +535,7 @@ def main():
                     x, y, z = 0.008, -0.174, 0.2
                 if(object_ids[5] == 87):
                     x, y, z = -0.01, -0.174, 0.2
-                # x = float(input("Enter x: "))
+                s = float(input("Enter stall: "))
                 # y = float(input("Enter y: "))
                 # z = float(input("Enter z: "))
                 ur5_pose_1.position.x = trans[0]+x
@@ -549,6 +561,9 @@ def main():
     ur5.go_to_joint(lst_joint_angles_2)
     for i in range(8,13):
         movebase_client(way_points[i])
+        if i ==12:
+            print("Meeting room reached")
+
     # state = [-0.05, -0.37, -0.785, -1, -0.8, 1.57]
     # ur5.go_to_joint(state)
     #Metting room dropbox locations
@@ -581,6 +596,7 @@ def main():
                 ur5_pose_1 = geometry_msgs.msg.Pose()
                 trans = object_tranforms[4][0]
                 x, y, z = 0.007, - 0.185, + 0.2
+                s = float(input("Enter stall: "))
                 # x = float(input("Enter x: "))
                 # y = float(input("Enter y: "))
                 # z = float(input("Enter z: "))
@@ -606,6 +622,7 @@ def main():
     movebase_client(way_points[14])
     movebase_client(way_points[15])
     movebase_client(way_points[16])
+    print("Research room reached")
     # Research lab drop box
     state=[0, 0, -1.22, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
@@ -621,6 +638,7 @@ def main():
     movebase_client(way_points[18])
 
     movebase_client(way_points[19])
+    print("Store room reached")
 
     ##### FPGA ######
     #################LEFT SIDE############################
@@ -636,6 +654,7 @@ def main():
         print("Done")
         if object_ids[2]!=-1:
             print("Found object_", object_ids[2])
+            s = float(input("Enter stall: "))
             # x = float(input("Enter x: "))
             # y = float(input("Enter y: "))
             # z = float(input("Enter z: "))
@@ -688,6 +707,7 @@ def main():
             #add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
             #print("Done")
             if object_ids[2]!=-1:
+                s = float(input("Enter stall: "))
                 print("Found object_", object_ids[2])
                 # x = float(input("Enter x: "))
                 # y = float(input("Enter y: "))
@@ -726,6 +746,7 @@ def main():
     for i in range(23,26):
         movebase_client(way_points[i])
 
+    print("Confrence room reached")
     #Conference room joint angles for dropping
     state=[0, 0, -0.8, 0, 1.36, 0]
     ur5.go_to_joint(state)
@@ -747,7 +768,7 @@ def main():
     movebase_client(way_points[29])
     cv2.destroyAllWindows()
 
-    print("Finished")
+    print("Mission Accomplished")
     del ur5
 
 if __name__ == '__main__':
