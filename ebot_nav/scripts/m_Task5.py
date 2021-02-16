@@ -228,7 +228,7 @@ def findObjects():
     return_object_tranform = [0]*8
     rate = rospy.Rate(10.0)
     obj_name = '/object_'
-    object_ids = [[59, 71, 78], [57, 74, 76, 82], [55, 70, 73, 75, 83 ,88], [56, 41, 80], [58, 43, 64,85], [44, 68,69,84,87], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
+    object_ids = [[59, 71, 78,89], [57, 74, 76, 82], [55, 70, 73, 75, 83 ,88], [56, 41, 80], [58, 43, 64,85], [44, 68,69,84,87,90], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
     #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
     start_time = time.time()
     end_time = time.time()
@@ -333,7 +333,7 @@ def showDetectedObjects(msg):
     data = msg.objects.data
     detected_objects_image = image.copy()
     names = ["Wheels", "EYFI", "FPGA", "Battery", "Glue", "Coke", "Adhesive", "Glass"]
-    object_ids = [[59, 71, 78], [57, 74, 76, 82], [55, 70, 73, 75, 83, 88], [56, 41, 80], [58, 43, 64, 85], [44, 68, 84, 87], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
+    object_ids = [[59, 71, 78,89], [57, 74, 76, 82], [55, 70, 73, 75, 83 ,88], [56, 41, 80], [58, 43, 64,85], [44, 68,69,84,87,90], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
     detected = {}
     for i in range(0, len(data), 12):
         idx = int(data[i])
@@ -402,8 +402,8 @@ def main():
                 (13.2159, -0.604, -0.7577, -0.650), #8  Pantry Out OIntermediate
                 (13.0, 0.8, -0.719, -0.694), #9  Pantry Out OIntermediate
 
-                ( 8.59, 1.148, 0.7063, 0.7078), #10   Meeting Intermediate CV
-                ( 8.59, 2.4, 1.0, 0.0003), #11  Meeting Intermediate 2 CV
+                ( 8.64, 1.148, 0.7063, 0.7078), #10   Meeting Intermediate CV
+                ( 8.64, 2.4, 1.0, 0.0003), #11  Meeting Intermediate 2 CV
                 ( 6.9, 2.6, 0.0, 0.010), #12   Meeting DropBox
                 # #Object 2
                 ( 7.6, 2.4, 0.0, 0.007), #13   Meeting Pickup
@@ -482,7 +482,7 @@ def main():
             # if(object_ids[5]==44):
             #     x = 0.005
             if(object_ids[5] == 69):
-                x, y, z = 0.0085, -0.175, 0.17
+                x, y, z = 0.01, -0.175, 0.17
 
 
             # x = float(input("Enter x: "))
