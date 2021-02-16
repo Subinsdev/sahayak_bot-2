@@ -539,7 +539,7 @@ def main():
                 if(object_ids[5] == 87):
                     x, y, z = -0.015, -0.174, 0.2
                 elif(object_ids[5]==90):
-                    x, y, z = 0.013, -0.174, 0.2
+                    x, y, z = 0.017, -0.174, 0.2
 
                 # x = float(input("Enter x: "))
                 # y = float(input("Enter y: "))
