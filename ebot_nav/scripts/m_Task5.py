@@ -474,6 +474,10 @@ def main():
                 x, y, z = 0.005, -0.175, 0.2
             if(object_ids[5]==44):
                 x = 0
+            elif(object_ids[5] == 69):
+                x, y, z = -0.0085, -0.175, 0.17
+
+
             # x = float(input("Enter x: "))
             # y = float(input("Enter y: "))
             # z = float(input("Enter z: "))
@@ -491,7 +495,7 @@ def main():
             #     break
             ur5_pose_1.position.z = trans[2]+z-0.07
             ur5.go_to_pose(ur5_pose_1)
-            ur5.closeGripper(0.235)
+            ur5.closeGripper(0.24)
             ur5.go_to_joint(states[i])
             # remove_detected_objects_mesh_in_rviz(object_ids)
             break
@@ -522,7 +526,7 @@ def main():
                 elif(i == 1):
                     x, y, z = 0.008, -0.174, 0.2
                 if(object_ids[5] == 87):
-                    x, y, z = -0.01, -0.174, 0.2
+                    x, y, z = -0.015, -0.174, 0.2
                 # x = float(input("Enter x: "))
                 # y = float(input("Enter y: "))
                 # z = float(input("Enter z: "))
@@ -540,7 +544,7 @@ def main():
                 #     break
                 ur5_pose_1.position.z = trans[2]+z-0.07
                 ur5.go_to_pose(ur5_pose_1)
-                ur5.closeGripper(0.235)
+                ur5.closeGripper(0.24)
                 ur5.go_to_joint(states[i])
                 # remove_detected_objects_mesh_in_rviz(object_ids)
                 ur5.go_to_joint(lst_joint_angles_2)
@@ -598,7 +602,7 @@ def main():
                 #     break
                 ur5_pose_1.position.z = trans[2]+z-0.075
                 ur5.go_to_pose(ur5_pose_1)
-                ur5.closeGripper(0.32)
+                ur5.closeGripper(0.33)
                 ur5.go_to_joint(states[i])
                 # remove_detected_objects_mesh_in_rviz(object_ids)
                 break
@@ -666,7 +670,7 @@ def main():
             # if flag==1:
             #     break
             ur5.closeGripper(0.21)
-            ur5.go_to_joint([-0.1, -0.37, -0.785, -1, -0.65, 1.57])
+            ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
             # remove_detected_objects_mesh_in_rviz(object_ids)
             movebase_client(way_points[20])
             break
@@ -714,7 +718,7 @@ def main():
                 # if flag==1:
                 #     break
                 ur5.closeGripper(0.195)
-                ur5.go_to_joint([-0.1, -0.37, -0.785, -1, -0.65, 1.57])
+                ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
                 # ur5.go_to_joint(lst_joint_angles_2)
                 # remove_detected_objects_mesh_in_rviz(object_ids)
                 movebase_client(way_points[22])
