@@ -415,7 +415,7 @@ def main():
                 (15.0, 3.9, -0.623, 0.781), #18   Research lab to store room Intermediate
                 #Object3
                 (26.065, -2.714, -0.891, 0.454),  #19  Store Pickup 1
-                (26.065, -2.714, 0.894, -0.42),  #20   Store Pickup 1 Orientation to Exit
+                (26.065, -2.714, -0.994, 0.0),  #20   Store Pickup 1 Orientation to Exit
                 # (25.8, -3.2, -0.871, 0.490), #21   Store Pickup 2
                 # (25.8, -3.2, 0.894, -0.448), #22    Store Pickup 2 Orientation to Exit
                 (25.8179, -3.3344, -0.871, 0.490), #21   Store Pickup 2
@@ -448,7 +448,7 @@ def main():
     # Moving to Table 1
     for i in range(1,5):
         movebase_client(way_points[i]) #going to goal locations
-        if i == 4:
+        if i == 3:
             print("Entered the Pantry")
     # coke table left up position
     state=[-0.4, 0.0, 0.0, 0, 0, 0]
@@ -482,7 +482,7 @@ def main():
             # if(object_ids[5]==44):
             #     x = 0.005
             if(object_ids[5] == 69):
-                x, y, z = 0.007, -0.175, 0.17
+                x, y, z = 0.0085, -0.175, 0.17
 
 
             # x = float(input("Enter x: "))
@@ -558,27 +558,27 @@ def main():
                 ur5.closeGripper(0.24)
                 ur5.go_to_joint(states[i])
                 # remove_detected_objects_mesh_in_rviz(object_ids)
-                ur5.go_to_joint(lst_joint_angles_2)
                 print(names[5],"Picked")
+                ur5.go_to_joint(lst_joint_angles_2)
                 movebase_client(way_points[7])
                 break
 
     ur5.go_to_joint(lst_joint_angles_2)
     for i in range(8,13):
         movebase_client(way_points[i])
-        if i == 12:
+        if i == 11:
             print("Entered the Meeting Room")
     # state = [-0.05, -0.37, -0.785, -1, -0.8, 1.57]
     # ur5.go_to_joint(state)
     #Metting room dropbox locations
     state=[-0.2, 0.23, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
-    state=[1.13, 0.4, -1.12, 0, 1.36, 0]
+    state=[0.9, 0.4, -1.12, -1, 0.2, 1.57]
     ur5.go_to_joint(state)
     #dropping the coke can
     print("Opening gripper")
     ur5.openGripper()
-    print(names[5],"Dropped in Dropbox 1")
+    print(names[5],"Dropped in Dropbox 2")
     state=[-0.2, 0.23, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
     ur5.go_to_joint(lst_joint_angles_1)
@@ -605,6 +605,8 @@ def main():
                 ur5_pose_1 = geometry_msgs.msg.Pose()
                 trans = object_tranforms[4][0]
                 x, y, z = 0.007, - 0.185, + 0.2
+                if object_ids[4] == 64:
+                    x = 0.0055
                 # x = float(input("Enter x: "))
                 # y = float(input("Enter y: "))
                 # z = float(input("Enter z: "))
@@ -623,8 +625,8 @@ def main():
                 ur5_pose_1.position.z = trans[2]+z-0.075
                 ur5.go_to_pose(ur5_pose_1)
                 ur5.closeGripper(0.33)
-                ur5.go_to_joint(states[i])
                 print(names[4],"Picked")
+                ur5.go_to_joint(states[i])
                 # remove_detected_objects_mesh_in_rviz(object_ids)
                 break
 
@@ -641,7 +643,7 @@ def main():
     #dropping the glue
     print("Opening gripper")
     ur5.openGripper()
-    print(names[4],"Dropped in Dropbox 2")
+    print(names[4],"Dropped in Dropbox 3")
     state=[0, 0, -1.22, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
     ur5.go_to_joint(lst_joint_angles_1)
@@ -680,6 +682,8 @@ def main():
                 x, y, z = -0.1, -0.19, 0.21
             elif object_ids[2]==88:
                 x, y, z = -0.077, -0.145, 0.19
+            elif object_ids[2]==55:
+                x, y, z = -0.075, -0.145, 0.19
 
             ur5_pose_1 = geometry_msgs.msg.Pose()
             trans = object_tranforms[2][0]
@@ -775,7 +779,7 @@ def main():
 
     print("Opening gripper")
     ur5.openGripper()
-    print(names[2],"Dropped in Dropbox 3")
+    print(names[2],"Dropped in Dropbox 1")
 
     state=[0, 0, -0.8, 0, 0, 0]
     ur5.go_to_joint(state)
