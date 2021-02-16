@@ -416,8 +416,6 @@ def main():
                 #Object3
                 (26.065, -2.714, -0.891, 0.454),  #19  Store Pickup 1
                 (26.065, -2.714, -0.994, 0.0),  #20   Store Pickup 1 Orientation to Exit
-                # (25.8, -3.2, -0.871, 0.490), #21   Store Pickup 2
-                # (25.8, -3.2, 0.894, -0.448), #22    Store Pickup 2 Orientation to Exit
                 (25.8179, -3.3344, -0.871, 0.490), #21   Store Pickup 2
                 (25.8179, -3.3344, 0.894, -0.448), #22    Store Pickup 2 Orientation to Exit
 
@@ -425,7 +423,8 @@ def main():
                 ( 5.156, 0.861, -0.706, 0.7082), #24   Conference Intermediate CV
                 ( 5.070, -0.7, -0.9126, 0.4087), #25  Conference DropBox CV
                 ( 5.070, -0.7, -0.7583, -0.6518), #26  Conference Intermediate out CV
-                ( 5.25, 0.65, -0.7583, -0.6518), #27   Conference Intermediate out CV
+                ( 5.18, 0.1, -0.7583, -0.6518), #27   Conference Intermediate out CV 1
+                ( 5.25, 0.65, -0.7583, -0.6518), #27   Conference Intermediate out CV 2
                 #
                 (0,0,0,1)]                   #28Start
 
@@ -482,7 +481,7 @@ def main():
             # if(object_ids[5]==44):
             #     x = 0.005
             if(object_ids[5] == 69):
-                x, y, z = 0.01, -0.175, 0.17
+                x, y, z = 0.015, -0.175, 0.17
 
 
             # x = float(input("Enter x: "))
@@ -565,7 +564,7 @@ def main():
                 ur5.go_to_joint(lst_joint_angles_2)
                 movebase_client(way_points[7])
                 break
-    
+
     if object_ids[5]==-1:
         movebase_client(way_points[7])
 
@@ -644,7 +643,7 @@ def main():
     # Research lab drop box
     state=[0, 0, -1.22, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
-    state=[-1.75, 0, -1.22, -1, -0.8, 1.57]
+    state=[-1.75, 0.4, -1.32, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
     #dropping the glue
     print("Opening gripper")
@@ -696,7 +695,7 @@ def main():
             ur5_pose_1.position.x = trans[0]+x
             ur5_pose_1.position.y = trans[1]+y
             ur5_pose_1.position.z = trans[2]+z
-            angles = quaternion_from_euler(3.8, 0, -3.49)
+            angles = quaternion_from_euler(            3.8, 0, -3.49)
             ur5_pose_1.orientation.x = angles[0]
             ur5_pose_1.orientation.y = angles[1]
             ur5_pose_1.orientation.z = angles[2]
@@ -796,6 +795,7 @@ def main():
     movebase_client(way_points[27])
     movebase_client(way_points[28])
     movebase_client(way_points[29])
+    # movebase_client(way_points[30])
     cv2.destroyAllWindows()
 
     print("Mission Accomplished")
