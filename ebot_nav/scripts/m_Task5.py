@@ -403,8 +403,8 @@ def main():
                 (13.0, 0.8, -0.719, -0.694), #9  Pantry Out OIntermediate
 
                 ( 8.59, 1.148, 0.7063, 0.7078), #10   Meeting Intermediate CV
-                ( 8.59, 2.132, 0.7063, 0.7078), #11  Meeting Intermediate 2 CV
-                ( 6.9, 2.6, 0.00, 0.010), #12   Meeting DropBox
+                ( 8.59, 2.4, 1.0, 0.0003), #11  Meeting Intermediate 2 CV
+                ( 6.9, 2.6, 0.0, 0.010), #12   Meeting DropBox
                 # #Object 2
                 ( 7.6, 2.4, 0.0, 0.007), #13   Meeting Pickup
                 ( 8.5, 2.175, -0.7068, 0.7073), #14   Meeting Intermediate out CV
@@ -479,9 +479,9 @@ def main():
                 x, y, z = 0.005, -0.175, 0.2
             elif(i == 1):
                 x, y, z = 0.005, -0.175, 0.2
-            if(object_ids[5]==44):
-                x = 0
-            elif(object_ids[5] == 69):
+            # if(object_ids[5]==44):
+            #     x = 0.005
+            if(object_ids[5] == 69):
                 x, y, z = 0.007, -0.175, 0.17
 
 
