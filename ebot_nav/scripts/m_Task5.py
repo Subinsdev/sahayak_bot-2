@@ -213,7 +213,7 @@ def movebase_client(g):
     goal.target_pose.pose.orientation.y = 0
     goal.target_pose.pose.orientation.z = g[2]
     goal.target_pose.pose.orientation.w = g[3]
-    print("way Point:    ",g)
+    # print("way Point:    ",g)
     client.send_goal(goal)
     wait = client.wait_for_result()
     if not wait:
@@ -538,6 +538,9 @@ def main():
                     x, y, z = 0.008, -0.174, 0.2
                 if(object_ids[5] == 87):
                     x, y, z = -0.015, -0.174, 0.2
+                elif(object_ids[5]==90):
+                    x, y, z = 0.013, -0.174, 0.2
+
                 # x = float(input("Enter x: "))
                 # y = float(input("Enter y: "))
                 # z = float(input("Enter z: "))
@@ -641,7 +644,7 @@ def main():
     # Research lab drop box
     state=[0, 0, -1.22, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
-    state=[-1.6, 0, -1.22, -1, -0.8, 1.57]
+    state=[-1.75, 0, -1.22, -1, -0.8, 1.57]
     ur5.go_to_joint(state)
     #dropping the glue
     print("Opening gripper")
