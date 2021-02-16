@@ -461,7 +461,7 @@ def main():
     for i in range(len(states)):
         ur5.go_to_joint(states[i])
         object_ids, object_tranforms  = findObjects()
-        for i  in range(8):
+        for j in range(8):
             if object_ids[i] != -1:
                 print(names[i],"Identified")
         print(object_ids)
@@ -518,7 +518,7 @@ def main():
         for i in range(len(states)):
             ur5.go_to_joint(states[i])
             object_ids, object_tranforms  = findObjects()
-            for i  in range(8):
+            for j  in range(8):
                 if object_ids[i] != -1:
                     print(names[i],"Identified")
             print(object_ids)
@@ -589,7 +589,7 @@ def main():
     for i in range(len(states)):
             ur5.go_to_joint(states[i])
             object_ids, object_tranforms  = findObjects()
-            for i  in range(8):
+            for j  in range(8):
                 if object_ids[i] != -1:
                     print(names[i],"Identified")
             print(object_ids)
@@ -656,7 +656,7 @@ def main():
     for state in states:
         ur5.go_to_joint(state)
         object_ids, object_tranforms  = findObjects()
-        for i  in range(8):
+        for j  in range(8):
             if object_ids[i] != -1:
                 print(names[i],"Identified")
         #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
@@ -713,7 +713,7 @@ def main():
         for state in states:
             ur5.go_to_joint(state)
             object_ids, object_tranforms  = findObjects()
-            for i  in range(8):
+            for j  in range(8):
                 if object_ids[i] != -1:
                     print(names[i],"Identified")
             #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
