@@ -228,7 +228,7 @@ def findObjects():
     return_object_tranform = [0]*8
     rate = rospy.Rate(10.0)
     obj_name = '/object_'
-    object_ids = [[59, 71, 78,89], [57, 74, 76, 82], [55, 70, 73, 75, 83 ,88], [56, 41, 80], [58, 43, 64,85], [44, 68,69,84,87,90], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
+    object_ids = [[59, 71, 78,89], [57, 74, 76, 82], [55, 70, 73, 75, 83 ,88], [56, 41, 80], [58, 43, 64,85], [44, 68,69,84,87,90], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67,91]]
     #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
     start_time = time.time()
     end_time = time.time()
@@ -333,7 +333,7 @@ def showDetectedObjects(msg):
     data = msg.objects.data
     detected_objects_image = image.copy()
     names = ["Wheels", "EYFI", "FPGA", "Battery", "Glue", "Coke", "Adhesive", "Glass"]
-    object_ids = [[59, 71, 78,89], [57, 74, 76, 82], [55, 70, 73, 75, 83 ,88], [56, 41, 80], [58, 43, 64,85], [44, 68,69,84,87,90], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67]]
+    object_ids = [[59, 71, 78,89], [57, 74, 76, 82], [55, 70, 73, 75, 83 ,88], [56, 41, 80], [58, 43, 64,85], [44, 68,69,84,87,90], [42, 72, 81, 86], [45, 48, 49, 50, 51, 52, 53, 66, 67,91]]
     detected = {}
     for i in range(0, len(data), 12):
         idx = int(data[i])
@@ -455,7 +455,7 @@ def main():
     # ur5.go_to_joint(state)
     #Finding Coke
     # object_ids, object_tranforms  = findObjects()
-    # print(object_ids)
+    # # print(object_ids)
     #
     states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57], [-0.2, -0.37, -0.785, -1, -0.8, 1.57]]
     for i in range(len(states)):
@@ -464,8 +464,8 @@ def main():
         for j  in range(8):
             if object_ids[j] != -1:
                 print(names[j],"Identified")
-        print(object_ids)
-        print(object_tranforms)
+        # print(object_ids)
+        # print(object_tranforms)
         print("Adding deteced objects in rviz")
         # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
         print("Done")
@@ -521,8 +521,8 @@ def main():
             for j  in range(8):
                 if object_ids[j] != -1:
                     print(names[j],"Identified")
-            print(object_ids)
-            print(object_tranforms)
+            # print(object_ids)
+            # print(object_tranforms)
             print("Adding deteced objects in rviz")
             # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
             print("Done")
@@ -599,8 +599,8 @@ def main():
                 if object_ids[j] != -1:
                     print(names[j],"Identified")
 
-            print(object_ids)
-            print(object_tranforms)
+            # print(object_ids)
+            # print(object_tranforms)
             print("Adding deteced objects in rviz")
             # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
             print("Done")
@@ -670,8 +670,8 @@ def main():
                 print(names[j],"Identified")
 
         #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
-        print(object_ids)
-        print(object_tranforms)
+        # print(object_ids)
+        # print(object_tranforms)
         print("Adding deteced objects in rviz")
         # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
         print("Done")
@@ -730,8 +730,8 @@ def main():
                     print(names[j],"Identified")
 
             #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
-            print(object_ids)
-            print(object_tranforms)
+            # print(object_ids)
+            # print(object_tranforms)
             #print("Adding deteced objects in rviz")
             #add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
             #print("Done")
