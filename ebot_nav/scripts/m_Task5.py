@@ -461,9 +461,9 @@ def main():
     for i in range(len(states)):
         ur5.go_to_joint(states[i])
         object_ids, object_tranforms  = findObjects()
-        for i  in range(8):
-            if object_ids[i] != -1:
-                print(names[i],"Identified")
+        for j  in range(8):
+            if object_ids[j] != -1:
+                print(names[j],"Identified")
         print(object_ids)
         print(object_tranforms)
         print("Adding deteced objects in rviz")
@@ -482,7 +482,7 @@ def main():
             if(object_ids[5]==44):
                 x = 0
             elif(object_ids[5] == 69):
-                x, y, z = -0.0085, -0.175, 0.17
+                x, y, z = 0.007, -0.175, 0.17
 
 
             # x = float(input("Enter x: "))
@@ -518,9 +518,9 @@ def main():
         for i in range(len(states)):
             ur5.go_to_joint(states[i])
             object_ids, object_tranforms  = findObjects()
-            for i  in range(8):
-                if object_ids[i] != -1:
-                    print(names[i],"Identified")
+            for j  in range(8):
+                if object_ids[j] != -1:
+                    print(names[j],"Identified")
             print(object_ids)
             print(object_tranforms)
             print("Adding deteced objects in rviz")
@@ -589,9 +589,10 @@ def main():
     for i in range(len(states)):
             ur5.go_to_joint(states[i])
             object_ids, object_tranforms  = findObjects()
-            for i  in range(8):
-                if object_ids[i] != -1:
-                    print(names[i],"Identified")
+            for j  in range(8):
+                if object_ids[j] != -1:
+                    print(names[j],"Identified")
+
             print(object_ids)
             print(object_tranforms)
             print("Adding deteced objects in rviz")
@@ -656,9 +657,10 @@ def main():
     for state in states:
         ur5.go_to_joint(state)
         object_ids, object_tranforms  = findObjects()
-        for i  in range(8):
-            if object_ids[i] != -1:
-                print(names[i],"Identified")
+        for j  in range(8):
+            if object_ids[j] != -1:
+                print(names[j],"Identified")
+
         #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
         print(object_ids)
         print(object_tranforms)
@@ -713,9 +715,10 @@ def main():
         for state in states:
             ur5.go_to_joint(state)
             object_ids, object_tranforms  = findObjects()
-            for i  in range(8):
-                if object_ids[i] != -1:
-                    print(names[i],"Identified")
+            for j in range(8):
+                if object_ids[j] != -1:
+                    print(names[j],"Identified")
+
             #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
             print(object_ids)
             print(object_tranforms)
