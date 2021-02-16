@@ -631,6 +631,7 @@ def main():
                 ur5.go_to_pose(ur5_pose_1)
                 ur5.closeGripper(0.33)
                 print(names[4],"Picked")
+                ur5.go_to_joint([0.05, -0.37, -0.785, -1, -0.8, 1.57])
                 ur5.go_to_joint(states[i])
                 # remove_detected_objects_mesh_in_rviz(object_ids)
                 break
@@ -641,9 +642,9 @@ def main():
     movebase_client(way_points[16])
     print("Entered the Research Room")
     # Research lab drop box
-    state=[0, 0, -1.22, -1, -0.8, 1.57]
+    state=[0, 0, -1.22, -1, 0, 1.57]
     ur5.go_to_joint(state)
-    state=[-1.75, 0.4, -1.32, -1, -0.8, 1.57]
+    state=[-1.75, 0.4, -1.32, -1, 0, 1.57]
     ur5.go_to_joint(state)
     #dropping the glue
     print("Opening gripper")
@@ -695,7 +696,7 @@ def main():
             ur5_pose_1.position.x = trans[0]+x
             ur5_pose_1.position.y = trans[1]+y
             ur5_pose_1.position.z = trans[2]+z
-            angles = quaternion_from_euler(            3.8, 0, -3.49)
+            angles = quaternion_from_euler(3.8, 0, -3.49)
             ur5_pose_1.orientation.x = angles[0]
             ur5_pose_1.orientation.y = angles[1]
             ur5_pose_1.orientation.z = angles[2]
@@ -708,13 +709,13 @@ def main():
             # if flag==1:
             #     break
             ur5.closeGripper(0.21)
+            ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
             ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
             print(names[2],"Picked")
+            ur5.go_to_joint(lst_joint_angles_2)
             # remove_detected_objects_mesh_in_rviz(object_ids)
             movebase_client(way_points[20])
             break
-
-    ur5.go_to_joint(lst_joint_angles_2)
 
     if object_ids[2]==-1:
         ur5.go_to_joint(lst_joint_angles_2)
@@ -761,15 +762,17 @@ def main():
                 # if flag==1:
                 #     break
                 ur5.closeGripper(0.195)
+                ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
                 ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
                 print(names[2],"Picked")
-                # ur5.go_to_joint(lst_joint_angles_2)
+                ur5.go_to_joint(lst_joint_angles_2)
                 # remove_detected_objects_mesh_in_rviz(object_ids)
                 movebase_client(way_points[22])
                 break
 
-
-    ur5.go_to_joint(lst_joint_angles_2)
+    if(object_ids[2]!=-1):
+        ur5.go_to_joint(lst_joint_angles_2)
+        movebase_client(way_points[22])
 
     for i in range(23,26):
         movebase_client(way_points[i])
