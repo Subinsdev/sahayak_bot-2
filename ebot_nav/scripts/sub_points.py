@@ -222,6 +222,11 @@ def movebase_client(g):
     else:
         return client.get_result()
 
+def move_base_points(lt):
+    for i in range(len(lt)):
+        # print(lt[i])
+        movebase_client(lt[i])
+
 def findObjects():
     listener = tf.TransformListener()
     return_object_id = [-1]*8
@@ -232,7 +237,7 @@ def findObjects():
     #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
     start_time = time.time()
     end_time = time.time()
-    while end_time-start_time<20:
+    while end_time-start_time<1.4:
         for i in range(len(object_ids)):
             for j in range(len(object_ids[i])):
                 obj_id = obj_name + str(object_ids[i][j])
@@ -248,7 +253,6 @@ def findObjects():
         # print("Time completed: ", end_time-start_time)
     # x = input("Wait:   ")
     return return_object_id, return_object_tranform
-
 
 def addObjectBox(name, position, size, tolerance, angle):
     obj = geometry_msgs.msg.PoseStamped()
@@ -369,12 +373,89 @@ def storeImage(msg):
     bridge = cv_bridge.CvBridge()
     image = bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
 
+way_points_in = {
+                'SZ':[
+                    ( 0,0,-0.719, -0.694)
+                    ],
+                'MR':[
+                    ( 8.64, 1.148, 0.7063, 0.7078), #10   Meeting Intermediate CV
+                    ( 8.64, 2.4, 1.0, 0.0003), #11  Meeting Intermediate 2 CV
+                    ( 6.9, 2.6, 0.0, 0.010), #12   Meeting DropBox
+                    ( 7.6, 2.4, 0.0, 0.007) #13   Meeting Pickup
+
+                    ],
+                'P':[
+                    (13.035, 0.99, -0.702, 0.711), #1  Pantry Intermediate outside door
+                    (13.035, -0.1, -0.702, 0.711), #2  Pantry Intermediate inside door
+                    (13.035, -0.1, -0.182, 0.98), #3   Pantry Intermediate inside door orientation
+                    (14.695, -0.75, -0.718, 0.695), #4  Pantry Pickup Table 1
+                    (14.615, -0.62, 1, 0.0008), #5   Pantry Pickup Table 1 - Orientation to Table2
+                    (11.15, -1.32, -0.709, -0.70), #6   Pantry Pickup Table 2 Position 1
+                    (11.15, -1.32, 0.3824, 0.92395) #7  Pantry Pick.70up Table 2 Position 1 Orientation
+
+                ],
+                'RL':[
+                    (11.200, 10.010, -0.018, -1.00) #16  Reaserch DropBox along length
+                ],
+                'SR':[
+                    (26.065, -2.714, -0.891, 0.454), #19  Store Pickup 1
+                    (26.065, -2.714, -0.994, 0.0),  #20   Store Pickup 1 Orientation to Exit
+                    (25.8179, -3.3344, -0.871, 0.490) #21   Store Pickup 2
+                ],
+                'CR':[
+                    ( 5.156, 0.861, -0.706, 0.7082), #24   Conference Intermediate CV
+                    ( 5.070, -0.7, -0.9126, 0.4087) #25  Conference DropBox CV
+                ]
+                }
+
+way_points_out = {
+                'SZ':[
+                    ( 3.6, 0.85,0,1) #0  enter the hallway point
+                    ],
+                'MR':[
+                    ( 8.5, 2.175, -0.7068, 0.7073), #14   Meeting Intermediate out CV
+                    ( 8.638, 1.148, -0.7068, 0.7073) #15   Meeting Intermediate CV
+                    ],
+                'RL':[
+                    (14.6, 10.1097, -0.011123, -0.9936), #17  Reaserch DropBox Intermediatie to Store Room
+                    (15.0, 3.9, -0.623, 0.781) #18   Research lab to store room Intermediate
+                ],
+                'SR':[
+                    (16.7, 1.0, 1, 0.0) #23   Store Pickup 2 out
+                ],
+                'P':[
+                        ( 13.2159, -0.604, -0.7577, -0.650), #8  Pantry Out OIntermediate
+                        ( 13.0, 0.8, -0.719, -0.694) #9  Pantry Out OIntermediate
+                ],
+                'CR':[
+                    ( 5.070, -0.7, -0.7583, -0.6518), #26  Conference Intermediate out CV
+                    ( 5.18, 0.1, -0.7583, -0.6518), #27   Conference Intermediate out CV 1
+                    ( 5.25, 0.65, -0.7583, -0.6518) #28   Conference Intermediate out CV 2
+                ]
+                }
+
+rooms = ['SZ','MR','RL','SR','P','CR']
+
+time_points = np.zeros((6,6))
+
+def move_direct(l1, l2):
+    st = time.time();
+    move_base_points(way_points_out[rooms[l1]])
+    if(rooms[l1] == 'RL' and rooms[l2] == 'SR'):
+        movebase_client((14.6, 10.1097, -0.011123, -0.9936))
+    if(l2 == 'RL' and (l1 == 'SZ' or l1 == 'CR')):
+        movebase_client((10.0, 1.34, -0.149, -0.5))
+    # if((l2 == 'RL') and ()):
+    move_base_points(way_points_in[rooms[l2]])
+    et = time.time();
+    time_points[l1][l2] = et-st
+    print("From: " + rooms[l1] + ", To: " + rooms[l2] + " is:   " + str(time_points[l1][l2]))
 
 def main():
     global ur5
     ur5 = Ur5Moveit()
-
     sub2 = rospy.Subscriber('/camera/color/image_raw2', Image, callback=storeImage, queue_size=10)
+
 
     # print("Waiting for image")
     while True:
@@ -386,48 +467,6 @@ def main():
     print("Launched Detectetion Object Window")
 
     sub1 = rospy.Subscriber('/objectsStamped', ObjectsStamped, callback=showDetectedObjects, queue_size=10)
-
-    way_points = [
-                (3.6, 0.85,0,1), #0  enter the hallway point
-
-                #Object 1
-                (13.035, 0.99, -0.702, 0.711), #1  Pantry Intermediate outside door
-                (13.035, -0.1, -0.702, 0.711), #2  Pantry Intermediate inside door
-                (13.035, -0.1, -0.182, 0.98), #3   Pantry Intermediate inside door orientation
-                (14.695, -0.75, -0.718, 0.695), #4  Pantry Pickup Table 1
-
-                (14.615, -0.62, 1, 0.0008), #5   Pantry Pickup Table 1 - Orientation to Table2
-                (11.15, -1.32, -0.709, -0.70), #6   Pantry Pickup Table 2 Position 1
-
-                (11.15, -1.32, 0.3824, 0.92395), #7  Pantry Pick.70up Table 2 Position 1 Orientation
-                (13.2159, -0.604, -0.7577, -0.650), #8  Pantry Out OIntermediate
-                (13.0, 0.8, -0.719, -0.694), #9  Pantry Out OIntermediate
-
-                ( 8.64, 1.148, 0.7063, 0.7078), #10   Meeting Intermediate CV
-                ( 8.64, 2.4, 1.0, 0.0003), #11  Meeting Intermediate 2 CV
-                ( 6.9, 2.6, 0.0, 0.010), #12   Meeting DropBox
-                # #Object 2
-                ( 7.6, 2.4, 0.0, 0.007), #13   Meeting Pickup
-                ( 8.5, 2.175, -0.7068, 0.7073), #14   Meeting Intermediate out CV
-                ( 8.638, 1.148, -0.7068, 0.7073), #15   Meeting Intermediate CV
-
-                (11.200, 10.010, -0.018, -1.00), #16  Reaserch DropBox along length
-                (14.6, 10.1097, -0.011123, -0.9936), #17  Reaserch DropBox Intermediatie to Store Room
-                #Object3
-                (15.0, 3.9, -0.623, 0.781), #18   Research lab to store room Intermediate
-                (26.065, -2.714, -0.891, 0.454),  #19  Store Pickup 1
-                (26.065, -2.714, -0.994, 0.0),  #20   Store Pickup 1 Orientation to Exit
-                (25.8179, -3.3344, -0.871, 0.490), #21   Store Pickup 2
-                (25.8179, -3.3344, 0.894, -0.448), #22    Store Pickup 2 Orientation to Exit
-
-                (16.7, 1.0, 1, 0.0), #23   Store Pickup 2 out
-                ( 5.156, 0.861, -0.706, 0.7082), #24   Conference Intermediate CV
-                ( 5.070, -0.7, -0.9126, 0.4087), #25  Conference DropBox CV
-                ( 5.070, -0.7, -0.7583, -0.6518), #26  Conference Intermediate out CV
-                ( 5.18, 0.1, -0.7583, -0.6518), #27   Conference Intermediate out CV 1
-                ( 5.25, 0.65, -0.7583, -0.6518), #28   Conference Intermediate out CV 2
-                #
-                (0,0,-0.719, -0.694)]                   #28Start
 
     names = ["Wheels", "EYFI", "FPGA", "Battery", "Glue", "Coke", "Adhesive", "Glass"]
 
@@ -444,363 +483,40 @@ def main():
         # rospy.sleep(2)
     movebase_client((0,0,0,0))
     print("Started Run!!")
-    movebase_client(way_points[0])
 
-    # Moving to Table 1
-    for i in range(1,5):
-        movebase_client(way_points[i]) #going to goal locations
-        if i == 3:
-            print("Pantry Reached!!")
-    # coke table left up position
-    # state=[-0.4, 0.0, 0.0, 0, 0, 0]
-    # ur5.go_to_joint(state)
-    #Finding Coke
-    # object_ids, object_tranforms  = findObjects()
-    # # print(object_ids)
-    #
-    states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57], [-0.2, -0.37, -0.785, -1, -0.8, 1.57]]
-    for i in range(len(states)):
-        ur5.go_to_joint(states[i])
-        object_ids, object_tranforms  = findObjects()
-        for j  in range(8):
-            if object_ids[j] != -1:
-                print(str(names[j]) + " Identified")
-        # print(object_ids)
-        # print(object_tranforms)
-        # #print("Adding deteced objects in rviz")
-        # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
-        # #print("Done")
-        z=0
-        if object_ids[5]!=-1:
-            # while not rospy.is_shutdown():
-            # print("Found object_", object_ids[5])
-            ur5_pose_1 = geometry_msgs.msg.Pose()
-            trans = object_tranforms[5][0]
-            if(i == 0):
-                x, y, z = 0.005, -0.175, 0.2
-            elif(i == 1):
-                x, y, z = 0.005, -0.175, 0.2
-            # if(object_ids[5]==44):
-            #     x = 0.005
-            if(object_ids[5] == 69):
-                x, y, z = 0.015, -0.175, 0.17
+    # move_base_points(way_points_out['SZ'])
+    move_direct(0, 1)
+    # move_direct(5, 4)
+    # move_direct(4, 3)
+    # move_direct(3, 4)
+    # move_direct(4, 5)
+    # move_direct(5, 2)
+    # move_direct(2, 4)
+    # move_direct(4, 2)
+    # move_direct(2, 3)
+    # move_direct(3, 2)
+    # move_direct(2, 5)
+    # move_direct(5, 1)
+    # move_direct(1, 4)
+    # move_direct(4, 1)
+    # move_direct(1, 3)
+    # move_direct(3, 1)
+    # move_direct(1, 2)
+    # move_direct(2, 1)
+    # move_direct(1, 5)
+    # move_direct(5, 0)
+    # move_direct(0, 4)
+    # move_direct(4, 0)
+    # move_direct(0, 3)
+    # move_direct(3, 0)
+    move_direct(1, 0)
+    move_direct(0, 2)
+    move_direct(2, 0)
+    # move_direct(0, 1)
+    # move_direct(1, 0)
 
 
-            # x = float(input("Enter x: "))
-            # y = float(input("Enter y: "))
-            # z = float(input("Enter z: "))
-            ur5_pose_1.position.x = trans[0]+x
-            ur5_pose_1.position.y = trans[1]+y
-            ur5_pose_1.position.z = trans[2]+z
-            angles = quaternion_from_euler(3.8, 0, -3.14)
-            ur5_pose_1.orientation.x = angles[0]
-            ur5_pose_1.orientation.y = angles[1]
-            ur5_pose_1.orientation.z = angles[2]
-            ur5_pose_1.orientation.w = angles[3]
-            ur5.go_to_pose(ur5_pose_1)
-            # flag = int(input("Close the gripper: "))
-            # if flag==1:
-            #     break
-            ur5_pose_1.position.z = trans[2]+z-0.07
-            ur5.go_to_pose(ur5_pose_1)
-            ur5.closeGripper(0.25)
-            ur5.go_to_joint(states[i])
-            print(str(names[5]) + " Picked")
-            # remove_detected_objects_mesh_in_rviz(object_ids)
-            break
-    ur5.go_to_joint(lst_joint_angles_2)
-    if object_ids[5] == -1:
-        ur5.go_to_joint(lst_joint_angles_1)
-        movebase_client(way_points[5])
-        movebase_client(way_points[6])
-        # state=[-0.4, 0.0, 0.0, 0, 0, 0]
-        # ur5.go_to_joint(state)
-        states=[[-0.07, -0.27, -0.785, -1, -0.8, 1.57], [-0.2, -0.27, -0.785, -1, -0.8, 1.57]]
-        for i in range(len(states)):
-            ur5.go_to_joint(states[i])
-            object_ids, object_tranforms  = findObjects()
-            for j  in range(8):
-                if object_ids[j] != -1:
-                    print(str(names[j]) + " Identified")
-            # print(object_ids)
-            # print(object_tranforms)
-            #print("Adding deteced objects in rviz")
-            # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
-            #print("Done")
-            z=0
-            if object_ids[5]!=-1:
-                # while not rospy.is_shutdown():
-                # print("Found object_", object_ids[5])
-                ur5_pose_1 = geometry_msgs.msg.Pose()
-                trans = object_tranforms[5][0]
-                if(i == 0):
-                    x, y, z = 0.008, -0.174, 0.2
-                elif(i == 1):
-                    x, y, z = 0.008, -0.174, 0.2
-                if(object_ids[5] == 87):
-                    x, y, z = -0.015, -0.174, 0.2
-                elif(object_ids[5]==90):
-                    x, y, z = 0.017, -0.174, 0.2
-
-                # x = float(input("Enter x: "))
-                # y = float(input("Enter y: "))
-                # z = float(input("Enter z: "))
-                ur5_pose_1.position.x = trans[0]+x
-                ur5_pose_1.position.y = trans[1]+y
-                ur5_pose_1.position.z = trans[2]+z
-                angles = quaternion_from_euler(3.8, 0, -3.14)
-                ur5_pose_1.orientation.x = angles[0]
-                ur5_pose_1.orientation.y = angles[1]
-                ur5_pose_1.orientation.z = angles[2]
-                ur5_pose_1.orientation.w = angles[3]
-                ur5.go_to_pose(ur5_pose_1)
-                # flag = int(input("Close the gripper: "))
-                # if flag==1:
-                #     break
-                ur5_pose_1.position.z = trans[2]+z-0.07
-                ur5.go_to_pose(ur5_pose_1)
-                ur5.closeGripper(0.24)
-                ur5.go_to_joint(states[i])
-                # remove_detected_objects_mesh_in_rviz(object_ids)
-                print(str(names[5])+ " Picked")
-                ur5.go#print("Adding deteced objects in rviz")_to_joint(lst_joint_angles_2)
-                movebase_client(way_points[7])
-                break
-
-    if object_ids[5]==-1:
-        movebase_client(way_points[7])
-
-    ur5.go_to_joint(lst_joint_angles_2)
-    for i in range(8,13):
-        movebase_client(way_points[i])
-        if i == 11:
-            print("Meeting Room Reached!!")
-    # state = [-0.05, -0.37, -0.785, -1, -0.8, 1.57]
-    # ur5.go_to_joint(state)
-    #Metting room dropbox locations
-    state=[-0.2, 0.23, -1.12, 0, 1.36, 0]
-    ur5.go_to_joint(state)
-    state=[0.9, 0.4, -1.12, -1, 0.2, 1.57]
-    ur5.go_to_joint(state)
-    #dropping the coke can
-    # print("Opening gripper")
-    ur5.openGripper()
-    print(str(names[5]) + " Dropped in Dropbox 2")
-    state=[-0.2, 0.23, -1.12, 0, 1.36, 0]
-    ur5.go_to_joint(state)
-    ur5.go_to_joint(lst_joint_angles_1)
-    #Meeting room pickup
-    movebase_client(way_points[13])
-    #Picking up glue
-    states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57]]
-    for i in range(len(states)):
-            ur5.go_to_joint(states[i])
-            object_ids, object_tranforms  = findObjects()
-            for j  in range(8):
-                if object_ids[j] != -1:
-                    print(str(names[j]) + " Identified")
-
-            # print(object_ids)
-            # print(object_tranforms)
-            #print("Adding deteced objects in rviz")
-            # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
-            #print("Done")
-            z=0
-            if object_ids[4]!=-1:
-                # while not rospy.is_shutdown():
-                # print("Found object_", object_ids[4])
-                ur5_pose_1 = geometry_msgs.msg.Pose()
-                trans = object_tranforms[4][0]
-                x, y, z = 0.007, - 0.185, + 0.2
-                if object_ids[4] == 64:
-                    x = 0.0055
-                # x = float(input("Enter x: "))
-                # y = float(input("Enter y: "))
-                # z = float(input("Enter z: "))
-                ur5_pose_1.position.x = trans[0]+x
-                ur5_pose_1.position.y = trans[1]+y
-                ur5_pose_1.position.z = trans[2]+z
-                angles = quaternion_from_euler(3.68, 0, -3.14)
-                ur5_pose_1.orientation.x = angles[0]
-                ur5_pose_1.orientation.y = angles[1]
-                ur5_pose_1.orientation.z = angles[2]
-                ur5_pose_1.orientation.w = angles[3]
-                ur5.go_to_pose(ur5_pose_1)
-                # flag = int(input("Close the gripper: "))
-                # if flag==1:
-                #     break
-                ur5_pose_1.position.z = trans[2]+z-0.075
-                ur5.go_to_pose(ur5_pose_1)
-                ur5.closeGripper(0.33)
-                print(str(names[4])+" Picked")
-                ur5.go_to_joint([0.05, -0.37, -0.785, -1, -0.8, 1.57])
-                # ur5.go_to_joint(states[i])
-                # remove_detected_objects_mesh_in_rviz(object_ids)
-                break
-
-    ur5.go_to_joint(lst_joint_angles_2)
-    movebase_client(way_points[14])
-    movebase_client(way_points[15])
-    movebase_client(way_points[16])
-    print("Research Room Reached!!")
-    # Research lab drop box
-    state=[0, 0, -1.22, -1, 0, 1.57]
-    ur5.go_to_joint(state)
-    state=[-1.55, 0.2, -1.32, -1, 0, 1.57]
-    ur5.go_to_joint(state)
-    #dropping the glue
-    # print("Opening gripper")
-    ur5.openGripper()
-    print(str(names[4]) + " Dropped in Dropbox 3")
-    state=[0, 0, -1.22, -1, -0.8, 1.57]
-    ur5.go_to_joint(state)
-    ur5.go_to_joint(lst_joint_angles_1)
-    movebase_client(way_points[17])
-    movebase_client(way_points[18])
-
-    movebase_client(way_points[19])
-    print("Store Room Reached!!")
-
-    ##### FPGA ######
-    #################LEFT SIDE############################
-    states=[[0, -0.37, -0.785, -1, -0.52, 1.57], [0.56, -0.37, -0.785, -1, -0.65, 1.57]]
-    for state in states:
-        ur5.go_to_joint(state)
-        object_ids, object_tranforms  = findObjects()
-        for j  in range(8):
-            if object_ids[j] != -1:
-                print(str(names[j]) + "Identified")
-
-        #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
-        # print(object_ids)
-        # print(object_tranforms)
-        #print("Adding deteced objects in rviz")
-        # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
-        # #print("Done")
-        if object_ids[2]!=-1:
-            # print("Found object_", object_ids[2])
-            # x = float(input("Enter x: "))
-            # y = float(input("Enter y: "))
-            # z = float(input("Enter z: "))
-            #rot_angle = float(input("Enter rotation: "))
-            x, y, z = -0.09, -0.195, 0.19
-            if object_ids[2]==75:
-                x, y, z = -0.11, -0.20, 0.19
-            elif object_ids[2]==73:
-                x, y, z = -0.1, -0.19, 0.21
-            elif object_ids[2]==88:
-                x, y, z = -0.077, -0.145, 0.19
-            elif object_ids[2]==55:
-                x, y, z = -0.075, -0.145, 0.19
-
-            ur5_pose_1 = geometry_msgs.msg.Pose()
-            trans = object_tranforms[2][0]
-            ur5_pose_1.position.x = trans[0]+x
-            ur5_pose_1.position.y = trans[1]+y
-            ur5_pose_1.position.z = trans[2]+z
-            angles = quaternion_from_euler(3.8, 0, -3.49)
-            ur5_pose_1.orientation.x = angles[0]
-            ur5_pose_1.orientation.y = angles[1]
-            ur5_pose_1.orientation.z = angles[2]
-            ur5_pose_1.orientation.w = angles[3]
-            ur5.go_to_pose(ur5_pose_1)
-
-            ur5_pose_1.position.z = trans[2]+0.155
-            ur5.go_to_pose(ur5_pose_1)
-            # flag = int(input("Close the gripper: "))
-            # if flag==1:
-            #     break
-            ur5.closeGripper(0.21)
-            ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
-            ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
-            print(str(names[2]) + " Picked")
-            ur5.go_to_joint(lst_joint_angles_2)
-            # remove_detected_objects_mesh_in_rviz(object_ids)
-            movebase_client(way_points[20])
-            break
-
-    if object_ids[2]==-1:
-        ur5.go_to_joint(lst_joint_angles_2)
-        movebase_client(way_points[21])
-        #################RIGHT SIDE##################
-        states=[[0, -0.37, -0.785, -1, -0.52, 1.57]]
-        for state in states:
-            ur5.go_to_joint(state)
-            object_ids, object_tranforms  = findObjects()
-            for j in range(8):
-                if object_ids[j] != -1:
-                    print(str(names[j]) + " Identified")
-
-            #0: Wheels, 1: EYFI Board, 2: FPGA, 3: Battery, 4: Glue, 5: Coke, 6: Adhesive, 7: Glass
-            # print(object_ids)
-            # print(object_tranforms)
-            ##print("Adding deteced objects in rviz")
-            #add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
-            ##print("Done")
-            if object_ids[2]!=-1:
-                # print("Found object_", object_ids[2])
-                # x = float(input("Enter x: "))
-                # y = float(input("Enter y: "))
-                # z = float(input("Enter z: "))
-                #rot_angle = float(input("Enter rotation: "))
-                x, y, z = -0.08, -0.16, 0.2
-                if(object_ids[2] == 70):
-                    x, y, z = -0.06, -0.16, 0.2
-                ur5_pose_1 = geometry_msgs.msg.Pose()
-                trans = object_tranforms[2][0]
-                ur5_pose_1.position.x = trans[0]+x
-                ur5_pose_1.position.y = trans[1]+y
-                ur5_pose_1.position.z = trans[2]+z
-                angles = quaternion_from_euler(3.8, 0, -3.49)
-                ur5_pose_1.orientation.x = angles[0]
-                ur5_pose_1.orientation.y = angles[1]
-                ur5_pose_1.orientation.z = angles[2]
-                ur5_pose_1.orientation.w = angles[3]
-                ur5.go_to_pose(ur5_pose_1)
-
-                ur5_pose_1.position.z = trans[2]+0.155
-                ur5.go_to_pose(ur5_pose_1)
-                # flag = int(input("Close the gripper: "))
-                # if flag==1:
-                #     break
-                ur5.closeGripper(0.195)
-                ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
-                ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
-                print(str(names[2])+ " Picked")
-                ur5.go_to_joint(lst_joint_angles_2)
-                # remove_detected_objects_mesh_in_rviz(object_ids)
-                movebase_client(way_points[22])
-                break
-
-    if(object_ids[2]!=-1):
-        ur5.go_to_joint(lst_joint_angles_1)
-        # movebase_client(way_points[22])
-
-    for i in range(23,26):
-        movebase_client(way_points[i])
-
-    print("Conference room Reached!!")
-    #Conference room joint angles for dropping
-    state=[0, 0, -0.8, 0, 1.36, 0]
-    ur5.go_to_joint(state)
-
-    state=[0.6, 0, -0.8, 0, 0.5, 0]
-    ur5.go_to_joint(state)
-
-    # print("Opening gripper")
-    ur5.openGripper()
-    print(str(names[2]) + " Dropped in Dropbox 1")
-
-    state=[0, 0, -0.8, 0, 0, 0]
-    ur5.go_to_joint(state)
-
-    ur5.go_to_joint(lst_joint_angles_1)
-
-    movebase_client(way_points[26])
-    movebase_client(way_points[27])
-    movebase_client(way_points[28])
-    movebase_client(way_points[29])
-    # movebase_client(way_points[30])
+    print(time_points)
     cv2.destroyAllWindows()
     print("Start Point Reached!!")
     print("Mission Accomplished")
