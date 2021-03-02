@@ -412,8 +412,8 @@ def main():
                 ( 6.9, 2.6, 0.0, 0.010), #12   Meeting DropBox
                 # #Object 2
                 ( 7.6, 2.4, 0.0, 0.007), #13   Meeting Pickup
-                ( 8.5, 2.175, -0.7068, 0.7073), #14   Meeting Intermediate out CV
-                ( 8.638, 1.148, -0.7068, 0.7073), #15   Meeting Intermediate CV
+                ( 8.4, 2.175, -0.7068, 0.7073), #14   Meeting Intermediate out CV
+                ( 8.5, 1.148, -0.7068, 0.7073), #15   Meeting Intermediate CV
 
                 (11.200, 10.010, -0.018, -1.00), #16  Reaserch DropBox along length
                 (14.6, 10.1097, -0.011123, -0.9936), #17  Reaserch DropBox Intermediatie to Store Room
@@ -463,7 +463,7 @@ def main():
 
     states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57]]
 
-    ur5.go_to_joint(states[1])
+    ur5.go_to_joint(states[0])
 
     object_ids, object_tranforms  = findObjects()
 
@@ -686,7 +686,7 @@ def main():
 
     state=[0.6, 0, -0.8, 0, 0.5, 0]
     ur5.go_to_joint(state)
-    
+
     ur5.openGripper()
     print(str(names[5]) + " Dropped in Dropbox 1")
 
