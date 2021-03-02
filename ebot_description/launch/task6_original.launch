@@ -1,7 +1,9 @@
 <launch>
+
+ <include file="$(find ebot_description)/launch/required_files.launch" />
 <!--   ebot -->
     <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find ebot_description)/urdf/ebot_ur5.xacro'"/>
-   
+
 
 
 <!--   task6 world -->
@@ -12,15 +14,44 @@
 	<arg name="z" default="0"/>
 	<arg name="r" default="0"/>
 	<arg name="p" default="0"/>
-	<arg name="ya" default="0"/>		
+	<arg name="ya" default="0"/>
 
 <!-- Spawn the Sahyak Bot robot model -->
-	<node name="mybot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen" 
+	<node name="mybot_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
 	    args="-urdf -param robot_description -model ebot -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg r) -P $(arg p) -Y $(arg ya)" />
 
-		
+
 <!-- include the navigation, moveit launch file and node for pick and place -->
-	
+<include file="$(find ebot_nav)/launch/amcl.launch" />
+
+    <arg name="map_file" default="$(find ebot_nav)/maps/task_5_world.yaml"/>
+	<node pkg="map_server" type="map_server" name="map_server" args="$(arg map_file)"/>
+
+    <!-- Move base -->
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find ebot_nav)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find ebot_nav)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find ebot_nav)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find ebot_nav)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find ebot_nav)/config/trajectory_planner.yaml" command="load" />
+
+    <!-- <param name="move_base/DWAPlannerROS/xy_goal_tolerance" value="0.2"/> -->
+    <!-- <param name="move_base/DWAPlannerROS/yaw_goal_tolerance" value="0.5"/> -->
+
+    </node>
+
+    <!-- include the moveit launch file and node for pick and place using perception-->
+  <include file="$(find pkg_moveit_ur5_1)/launch/moveit_rviz.launch">
+    <arg name="rviz_config" value="$(find pkg_moveit_ur5_1)/launch/moveit.rviz"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+    <!--Code to move from one point to another-->
+  <!-- <node pkg="ebot_nav" type="set_joint_angles.py" name="joint_angles" output="screen" /> -->
+  <!-- <node pkg="ebot_nav" type="m_Task5.py" name="code" output="screen" launch-prefix="gnome-terminal -command" /> -->
+  <node pkg="ebot_nav" type="m_Task5.py" name="code" output="screen" launch-prefix="gnome-terminal --command" />
+  <include file="$(find ebot_description)/launch/find_3d_object.launch" />
+  <!-- <include file="$(find ebot_description)/launch/load_session.launch" /> -->
 
 
 
@@ -28,5 +59,6 @@
 
 
 
-  
+
+
 </launch>

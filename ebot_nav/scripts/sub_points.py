@@ -395,11 +395,13 @@ way_points_in = {
 
                 ],
                 'RL':[
-                    (11.200, 10.010, -0.018, -1.00) #16  Reaserch DropBox along length
+                    (15.0, 3.9, -0.666, -0.74542),
+                    (14.8, 10.237 , -0.9999 , -0)
                 ],
                 'SR':[
+                    (16.7,1.0,0,1),
                     (26.065, -2.714, -0.891, 0.454), #19  Store Pickup 1
-                    (26.065, -2.714, -0.994, 0.0),  #20   Store Pickup 1 Orientation to Exit
+                    # (26.065, -2.714, -0.994, 0.0),  #20   Store Pickup 1 Orientation to Exit
                     (25.8179, -3.3344, -0.871, 0.490) #21   Store Pickup 2
                 ],
                 'CR':[
@@ -417,11 +419,10 @@ way_points_out = {
                     ( 8.638, 1.148, -0.7068, 0.7073) #15   Meeting Intermediate CV
                     ],
                 'RL':[
-                    (14.6, 10.1097, -0.011123, -0.9936), #17  Reaserch DropBox Intermediatie to Store Room
-                    (15.0, 3.9, -0.623, 0.781) #18   Research lab to store room Intermediate
+                    (11.2, 10.010, -0.91537, 0.402)
                 ],
                 'SR':[
-                    (16.7, 1.0, 1, 0.0) #23   Store Pickup 2 out
+                    (25.8179, -3.3344, 0.894, -0.448) #22    Store Pickup 2 Orientation to Exit
                 ],
                 'P':[
                         ( 13.2159, -0.604, -0.7577, -0.650), #8  Pantry Out OIntermediate
@@ -439,18 +440,13 @@ rooms = ['SZ','MR','RL','SR','P','CR']
 time_points = np.zeros((6,6))
 
 def move_direct(l1, l2):
-    st = time.time();
-    move_base_points(way_points_out[rooms[l1]])
-    if(rooms[l1] == 'RL' and rooms[l2] == 'SR'):
+    move_base_points(way_points_out[l1])
+    if(l1 == 'RL' and l2 == 'SR'):
         movebase_client((14.6, 10.1097, -0.011123, -0.9936))
     if(l2 == 'RL' and (l1 == 'SZ' or l1 == 'CR')):
         movebase_client((10.0, 1.34, -0.149, -0.5))
     # if((l2 == 'RL') and ()):
-    move_base_points(way_points_in[rooms[l2]])
-    et = time.time();
-    time_points[l1][l2] = et-st
-    print("From: " + rooms[l1] + ", To: " + rooms[l2] + " is:   " + str(time_points[l1][l2]))
-
+    move_base_points(way_points_in[l2])
 def main():
     global ur5
     ur5 = Ur5Moveit()
@@ -481,39 +477,107 @@ def main():
         #     # pub1.publish(obj)
         #     break
         # rospy.sleep(2)
-    movebase_client((0,0,0,0))
+    # movebase_client((0,0,0,0))
     print("Started Run!!")
 
     # move_base_points(way_points_out['SZ'])
-    move_direct(0, 1)
-    # move_direct(5, 4)
-    # move_direct(4, 3)
-    # move_direct(3, 4)
-    # move_direct(4, 5)
-    # move_direct(5, 2)
-    # move_direct(2, 4)
-    # move_direct(4, 2)
-    # move_direct(2, 3)
-    # move_direct(3, 2)
-    # move_direct(2, 5)
-    # move_direct(5, 1)
-    # move_direct(1, 4)
-    # move_direct(4, 1)
-    # move_direct(1, 3)
-    # move_direct(3, 1)
-    # move_direct(1, 2)
-    # move_direct(2, 1)
-    # move_direct(1, 5)
-    # move_direct(5, 0)
-    # move_direct(0, 4)
-    # move_direct(4, 0)
-    # move_direct(0, 3)
-    # move_direct(3, 0)
-    move_direct(1, 0)
-    move_direct(0, 2)
-    move_direct(2, 0)
-    # move_direct(0, 1)
-    # move_direct(1, 0)
+    move_direct('SZ', 'SR')
+
+    #################################### Battery ##################################
+    ############################ Looking Left Side  ############################
+    states=[[0, -0.37, -0.785, -1, -0.52, 1.57], [0.56, -0.37, -0.785, -1, -0.65, 1.57]]
+    for state in states:
+        ur5.go_to_joint(state)
+        object_ids, object_tranforms  = findObjects()
+        for j  in range(8):
+            if object_ids[j] != -1:
+                print(str(names[j]) + "Identified")
+        print("Adding deteced objects in rviz")
+        if object_ids[3]!=-1:
+            print("Found object_", object_ids[3])
+            x, y, z = -0.07, -0.18, 0.19
+            if object_ids[2]==101:
+                x, y, z = -0.07, -0.18, 0.19
+            elif object_ids[2]==80:
+                x, y, z = -0.07, -0.18, 0.21
+            elif object_ids[2]==102:
+                x, y, z = -0.07, -0.18, 0.21
+            elif object_ids[2]==56:
+                x, y, z = -0.05, -0.18, 0.19
+
+            ur5_pose_1 = geometry_msgs.msg.Pose()
+            trans = object_tranforms[3][0]
+            ur5_pose_1.position.x = trans[0]+x
+            ur5_pose_1.position.y = trans[1]+y
+            ur5_pose_1.position.z = trans[2]+z
+            angles = quaternion_from_euler(3.8, 0, -3.44)
+            ur5_pose_1.orientation.x = angles[0]
+            ur5_pose_1.orientation.y = angles[1]
+            ur5_pose_1.orientation.z = angles[2]
+            ur5_pose_1.orientation.w = angles[3]
+            ur5.go_to_pose(ur5_pose_1)
+
+            ur5_pose_1.position.z = trans[2]+0.155
+            ur5.go_to_pose(ur5_pose_1)
+            ur5.closeGripper(0.45)
+            ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
+            ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
+            print(str(names[3]) + " Picked")
+            ur5.go_to_joint(lst_joint_angles_2)
+            movebase_client(way_points[20])
+            break
+
+    if object_ids[3]==-1:
+        ur5.go_to_joint(lst_joint_angles_2)
+        movebase_client(way_points[21])
+
+        #################RIGHT SIDE##################
+        states=[[0, -0.37, -0.885, -1, -0.7, 1.57]]
+        for state in states:
+            ur5.go_to_joint(state)
+            object_ids, object_tranforms  = findObjects()
+            for j in range(8):
+                if object_ids[j] != -1:
+                    print(str(names[j]) + " Identified")
+            if object_ids[3]!=-1:
+                print("Found object_", object_ids[3])
+                x, y, z = -0.07, -0.18, 0.19
+                if object_ids[2]==103:
+                    x, y, z = -0.07, -0.18, 0.19
+                elif object_ids[2]==56:
+                    x, y, z = -0.045, -0.18, 0.19
+                elif object_ids[2]==98:
+                    x, y, z = -0.065, -0.18, 0.19
+
+                ur5_pose_1 = geometry_msgs.msg.Pose()
+                trans = object_tranforms[3][0]
+                ur5_pose_1.position.x = trans[0]+x
+                ur5_pose_1.position.y = trans[1]+y
+                ur5_pose_1.position.z = trans[2]+z
+                angles = quaternion_from_euler(3.8, 0, -3.44)
+                ur5_pose_1.orientation.x = angles[0]
+                ur5_pose_1.orientation.y = angles[1]
+                ur5_pose_1.orientation.z = angles[2]
+                ur5_pose_1.orientation.w = angles[3]
+                ur5.go_to_pose(ur5_pose_1)
+
+                ur5_pose_1.position.z = trans[2]+0.155
+                ur5.go_to_pose(ur5_pose_1)
+                ur5.closeGripper(0.45)
+                ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
+                ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
+                print(str(names[2])+ " Picked")
+                ur5.go_to_joint(lst_joint_angles_2)
+                movebase_client(way_points[22])
+                break
+
+
+    if(object_ids[3]!=-1):
+        ur5.go_to_joint(lst_joint_angles_1)
+
+    move_direct('SR', 'RL')
+    move_direct('RL', 'P')
+    move_direct('P', 'CR')
 
 
     print(time_points)
