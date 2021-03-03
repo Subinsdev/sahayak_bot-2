@@ -234,7 +234,8 @@ def findObjects():
     return_object_tranform = [0]*8
     rate = rospy.Rate(20.0)
     obj_name = '/object_'
-    object_ids = [[59, 71, 78, 89, 97, 99, 106], [57, 74, 76, 82, 104, 107], [55, 70, 73, 75, 83, 88, 105], [41, 56, 61, 63, 80, 98, 101, 102, 103], [43, 58, 64, 85, 93, 96], [44, 68, 69, 84, 87, 90], [42, 62, 72, 81, 86, 92, 95, 100], [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]    start_time = time.time()
+    object_ids = [[59, 71, 78, 89, 97, 99, 106], [57, 74, 76, 82, 104, 107], [55, 70, 73, 75, 83, 88, 105], [41, 56, 61, 63, 80, 98, 101, 102, 103], [43, 58, 64, 85, 93, 96], [44, 68, 69, 84, 87, 90], [42, 62, 72, 81, 86, 92, 95, 100], [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]
+    start_time = time.time()
     end_time = time.time()
     while end_time-start_time < 2:
         for i in range(len(object_ids)):
@@ -361,12 +362,10 @@ def showDetectedObjects(msg):
                     flag_object[i] = 1
                 detected_objects_image = cv2.polylines(detected_objects_image, [detected[idx]], True, (255, 0, 0), 3)
                 [x, y] = detected[idx][0][0]
-                org = (x+10, y+10)
+                org = (x, y+100)
                 fontScale = 1
                 color = (255, 255, 0)
                 thickness = 2
-                if y < 30:
-                    y += 100
                 detected_objects_image = cv2.putText(detected_objects_image, names[i], org, cv2.FONT_HERSHEY_SIMPLEX ,  fontScale, color, thickness, cv2.LINE_AA)
                 break
 
@@ -444,7 +443,8 @@ def main():
                         (15.0, 3.9, -0.666, -0.74542), #18   Research lab to store room Intermediate
                         # (15.121 , 1.588, -0.6666 , -0.74542),
                         (14.8, 10.237 , -0.9999 , 0),
-                        (11.2, 10.010, -0.91537, 0.402)
+                        (11.2, 10.010, -0.91537, 0.402),
+                        ( 8.6, 2.175, -0.7068, 0.7073) #14   Meeting Intermediate out CV
                         ]
 
     lst_joint_angles_1 = [-0.4, 0.74, 0.31, -0.02, -0.96, -0.02] #[0, 1.08, 0.37, 0, 0, 0]
@@ -462,22 +462,22 @@ def main():
     print("Started Run!")
     movebase_client(way_points[0])
     movebase_client(way_points[10])
-    movebase_client(way_points[11])
+    # movebase_client(way_points[11])
 
-    flag_object = np.zeros(8)
+    # flag_object = np.zeros(8)
+
+    # movebase_client(way_points[13])
+
+    # states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57]]
+
+    # ur5.go_to_joint(states[0])
+
+    # object_ids, object_tranforms  = findObjects()
+
+    # ur5.go_to_joint(lst_joint_angles_1)
+
+    movebase_client(way_points1[4])
     print("Meeting Room Reached")
-
-    movebase_client(way_points[13])
-
-    states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57]]
-
-    ur5.go_to_joint(states[0])
-
-    object_ids, object_tranforms  = findObjects()
-
-    ur5.go_to_joint(lst_joint_angles_1)
-
-    movebase_client(way_points[14])
     movebase_client(way_points[15])
 
     movebase_client(way_points1[0])
@@ -494,16 +494,15 @@ def main():
         object_ids, object_tranforms  = findObjects()
         # print("Adding deteced objects in rviz")
         if object_ids[3]!=-1:
-            # print("Found object_", object_ids[3])
-            x, y, z = -0.07, -0.18, 0.19
+            x, y, z = -0.07, -0.17, 0.19
             if object_ids[2]==101:
-                x, y, z = -0.07, -0.18, 0.19
+                x, y, z = -0.07, -0.17, 0.19
             elif object_ids[2]==80:
-                x, y, z = -0.07, -0.18, 0.21
+                x, y, z = -0.07, -0.17, 0.21
             elif object_ids[2]==102:
-                x, y, z = -0.07, -0.18, 0.21
+                x, y, z = -0.07, -0.17, 0.21
             elif object_ids[2]==56:
-                x, y, z = -0.05, -0.18, 0.19
+                x, y, z = -0.05, -0.17, 0.19
 
             ur5_pose_1 = geometry_msgs.msg.Pose()
             trans = object_tranforms[3][0]
@@ -538,13 +537,13 @@ def main():
             object_ids, object_tranforms  = findObjects()
             if object_ids[3]!=-1:
                 # print("Found object_", object_ids[3])
-                x, y, z = -0.07, -0.18, 0.19
+                x, y, z = -0.07, -0.17, 0.19
                 if object_ids[2]==103:
-                    x, y, z = -0.07, -0.18, 0.19
+                    x, y, z = -0.07, -0.17, 0.19
                 elif object_ids[2]==56:
-                    x, y, z = -0.045, -0.18, 0.19
+                    x, y, z = -0.045, -0.17, 0.19
                 elif object_ids[2]==98:
-                    x, y, z = -0.065, -0.18, 0.19
+                    x, y, z = -0.065, -0.17, 0.19
 
                 ur5_pose_1 = geometry_msgs.msg.Pose()
                 trans = object_tranforms[3][0]
@@ -561,7 +560,7 @@ def main():
                 ur5_pose_1.position.z = trans[2]+0.155
                 ur5.go_to_pose(ur5_pose_1)
                 ur5.closeGripper(0.45)
-                ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
+                # ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
                 ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
                 print(str(names[3])+ " Picked")
                 ur5.go_to_joint(lst_joint_angles_2)
