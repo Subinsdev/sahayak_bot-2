@@ -257,7 +257,7 @@ def addObjectBox(name, position, size, tolerance, angle):
     obj.pose.position.z = position[2]+tolerance[2]
     angles = quaternion_from_euler(angle[0], angle[1], angle[2])
     obj.pose.orientation.x = angles[0]
-    obj.pose.orientation.y = angles[1]
+    obj.pose.orientation.y = Glueangles[1]
     obj.pose.orientation.z = angles[2]
     obj.pose.orientation.w = angles[3]
 

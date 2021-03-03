@@ -435,6 +435,47 @@ way_points_out = {
                 ]
                 }
 
+dropbox_points = {
+                'MR':[
+                    ( 8.5, 2.175, -0.7068, 0.7073), #14   Meeting Intermediate out CV
+                    ( 8.638, 1.148, -0.7068, 0.7073) #15   Meeting Intermediate CV
+                    ],
+                'RL':[
+                    (11.2, 10.010, -0.91537, 0.402)
+                ],
+                'CR':[
+                    ( 5.070, -0.7, -0.7583, -0.6518), #26  Conference Intermediate out CV
+                    ( 5.18, 0.1, -0.7583, -0.6518), #27   Conference Intermediate out CV 1
+                    ( 5.25, 0.65, -0.7583, -0.6518) #28   Conference Intermediate out CV 2
+                ]
+}
+
+
+pickup_points = {
+                'SZ':[
+                    ( 3.6, 0.85,0,1) #0  enter the hallway point
+                    ],
+                'MR':[
+                    ( 8.5, 2.175, -0.7068, 0.7073), #14   Meeting Intermediate out CV
+                    ( 8.638, 1.148, -0.7068, 0.7073) #15   Meeting Intermediate CV
+                    ],
+                'RL':[
+                    (11.2, 10.010, -0.91537, 0.402)
+                ],
+                'SR':[
+                    (25.8179, -3.3344, 0.894, -0.448) #22    Store Pickup 2 Orientation to Exit
+                ],
+                'P':[
+                        ( 13.2159, -0.604, -0.7577, -0.650), #8  Pantry Out OIntermediate
+                        ( 13.0, 0.8, -0.719, -0.694) #9  Pantry Out OIntermediate
+                ],
+}
+
+Intermediate = {
+
+}
+
+
 rooms = ['SZ','MR','RL','SR','P','CR']
 
 time_points = np.zeros((6,6))

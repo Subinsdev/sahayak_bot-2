@@ -5,6 +5,7 @@ global_costmap:
   update_frequency: 4.0 #before: 5.0
   publish_frequency: 2.0 #before 0.5
   static_map: true
+  resolution: 0.015 #increase to for higher res 0.025
   transform_tolerance: 0.5
   cost_scaling_factor: 30
-  inflation_radius: 0.165
+  inflation_radius: 0.18

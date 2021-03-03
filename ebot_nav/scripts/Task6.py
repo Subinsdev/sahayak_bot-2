@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-
+#https://mowito-navstack.readthedocs.io/en/latest/config_traj_planner.html
 import rospy
 import sys
 import copy
@@ -444,7 +444,7 @@ def main():
                         # (15.121 , 1.588, -0.6666 , -0.74542),
                         (14.8, 10.237 , -0.9999 , 0),
                         (11.2, 10.010, -0.91537, 0.402),
-                        ( 8.6, 2.175, -0.7068, 0.7073) #14   Meeting Intermediate out CV
+                        ( 8.4, 2.175, -0.7068, 0.7073) #14   Meeting Intermediate out CV
                         ]
 
     lst_joint_angles_1 = [-0.4, 0.74, 0.31, -0.02, -0.96, -0.02] #[0, 1.08, 0.37, 0, 0, 0]
@@ -462,25 +462,25 @@ def main():
     print("Started Run!")
     movebase_client(way_points[0])
     movebase_client(way_points[10])
-    # movebase_client(way_points[11])
+    movebase_client(way_points[11])
+    print("Meeting Room Reached")
 
-    # flag_object = np.zeros(8)
+    flag_object = np.zeros(8)
 
-    # movebase_client(way_points[13])
+    movebase_client(way_points[13])
 
-    # states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57]]
+    states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57]]
 
-    # ur5.go_to_joint(states[0])
+    ur5.go_to_joint(states[0])
 
-    # object_ids, object_tranforms  = findObjects()
+    object_ids, object_tranforms  = findObjects()
 
-    # ur5.go_to_joint(lst_joint_angles_1)
+    ur5.go_to_joint(lst_joint_angles_1)
 
     movebase_client(way_points1[4])
-    print("Meeting Room Reached")
     movebase_client(way_points[15])
 
-    movebase_client(way_points1[0])
+    # movebase_client(way_points1[0])
     movebase_client(way_points[19])
 
     print("Store Room Reached")
@@ -520,7 +520,7 @@ def main():
             ur5.go_to_pose(ur5_pose_1)
             ur5.closeGripper(0.45)
             ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
-            ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
+            ur5.go_to_joint([-0.5, -0.37, -0.9, -1, -0.65, 1.57])
             print(str(names[3]) + " Picked")
             ur5.go_to_joint(lst_joint_angles_2)
             movebase_client(way_points[20])
@@ -689,7 +689,7 @@ def main():
     for i in range(24,26):
         movebase_client(way_points[i])
 
-    print("Conference Room Reached")
+    print("Conference Room ReacheGlue Detectedd")
     flag_object = np.zeros(8)
 
     ######  Conference room joint angles for dropping #########
