@@ -29,6 +29,8 @@ from sensor_msgs.msg import Image
 
 names = ["Wheels", "EYFI", "FPGA", "Battery", "Glue", "Coke", "Adhesive", "Glass"]
 
+flag_object = np.zeros(8)
+
 class Ur5Moveit:
 
     # Constructor
@@ -251,9 +253,9 @@ def findObjects():
         end_time = time.time()
         # print("Time completed: ", end_time-start_time)
     # x = input("Wait:   ")
-    for j in range(8):
-        if return_object_id[j] != -1:
-            print(str(names[j]) + " Identified")
+    # for j in range(8):
+    #     if return_object_id[j] != -1:
+    #         print(str(names[j]) + " Identified")
     return return_object_id, return_object_tranform
 
 
@@ -337,6 +339,7 @@ def remove_detected_objects_mesh_in_rviz(object_ids):
 
 def showDetectedObjects(msg):
     data = msg.objects.data
+    global flag_object
     detected_objects_image = image.copy()
     object_ids = [[59, 71, 78, 89, 94, 97, 99], [57, 74, 76, 82], [55, 70, 73, 75, 83, 88], [56, 41, 80, 98, 101, 102, 103], [58, 43, 64, 85, 93, 96], [44, 68, 84, 87, 90], [42, 72, 81, 86, 92, 95, 100], [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]
     detected = {}
@@ -355,12 +358,17 @@ def showDetectedObjects(msg):
     for i in range(len(object_ids)):
         for idx in object_ids[i]:
             if idx in detected:
+                if(flag_object[i] == 0):
+                    print(names[i] + ' Detected')
+                    flag_object[i] = 1
                 detected_objects_image = cv2.polylines(detected_objects_image, [detected[idx]], True, (255, 0, 0), 3)
                 [x, y] = detected[idx][0][0]
                 org = (x+10, y+10)
                 fontScale = 1
                 color = (255, 255, 0)
                 thickness = 2
+                if y < 30:
+                    y += 100
                 detected_objects_image = cv2.putText(detected_objects_image, names[i], org, cv2.FONT_HERSHEY_SIMPLEX ,  fontScale, color, thickness, cv2.LINE_AA)
                 break
 
@@ -376,6 +384,7 @@ def storeImage(msg):
 
 def main():
     global ur5
+    global flag_object
     ur5 = Ur5Moveit()
 
     sub2 = rospy.Subscriber('/camera/color/image_raw2', Image, callback=storeImage, queue_size=10)
@@ -457,6 +466,7 @@ def main():
     movebase_client(way_points[10])
     movebase_client(way_points[11])
 
+    flag_object = np.zeros(8)
     print("Meeting Room Reached")
 
     movebase_client(way_points[13])
@@ -474,7 +484,9 @@ def main():
 
     movebase_client(way_points1[0])
     movebase_client(way_points[19])
+
     print("Store Room Reached")
+    flag_object = np.zeros(8)
 
     #################################### Battery ##################################
     ############################ Looking Left Side  ############################
@@ -567,6 +579,7 @@ def main():
         movebase_client(way_points1[i])
 
     print("Research Lab Reached")
+    flag_object = np.zeros(8)
 
     state=[-0.2, 0.23, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
@@ -588,7 +601,7 @@ def main():
         movebase_client(way_points[i]) #going to goal locations
         if i == 3:
             print("Pantry Reached")
-
+            flag_object = np.zeros(8)
     ############################ Finding Coke ################################
 
 
@@ -680,8 +693,11 @@ def main():
         movebase_client(way_points[i])
 
     print("Conference Room Reached")
+    flag_object = np.zeros(8)
+
     ######  Conference room joint angles for dropping #########
     state=[0, 0, -0.8, 0, 1.36, 0]
+
     ur5.go_to_joint(state)
 
     state=[0.6, 0, -0.8, 0, 0.5, 0]

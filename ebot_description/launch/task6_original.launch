@@ -49,16 +49,8 @@
     <!--Code to move from one point to another-->
   <!-- <node pkg="ebot_nav" type="set_joint_angles.py" name="joint_angles" output="screen" /> -->
   <!-- <node pkg="ebot_nav" type="m_Task5.py" name="code" output="screen" launch-prefix="gnome-terminal -command" /> -->
-  <node pkg="ebot_nav" type="Task6.py" name="code" output="screen" launch-prefix="gnome-terminal --command" />
   <include file="$(find ebot_description)/launch/find_3d_object.launch" />
+  <node pkg="ebot_nav" type="Task6.py" name="code" output="screen" launch-prefix="gnome-terminal --command" />
   <!-- <include file="$(find ebot_description)/launch/load_session.launch" /> -->
-
-
-
-
-
-
-
-
 
 </launch>
