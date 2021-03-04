@@ -646,7 +646,7 @@ def main():
     ############# This goes to the next table in the pantry ##########
     ur5.go_to_joint(lst_joint_angles_1)
 
-    if (flag_object[5] == -1) or (flag_object[7] == -1):
+    if (flag_object[5] == 0) or (flag_object[7] == 0):
         ur5.go_to_joint(lst_joint_angles_1)
         movebase_client(way_points[5])
         movebase_client(way_points[6])
@@ -655,12 +655,12 @@ def main():
             ur5.go_to_joint(states[i])
             # object_ids, object_tranforms  = findObjects()
             z=0
-            if flag_object[5]!=-1:
+            if flag_object[5]!=0:
                 ur5.go_to_joint(lst_joint_angles_1)
                 movebase_client(way_points[7])
                 break
 
-    if (flag_object[5] == -1) or (flag_object[7] == -1):
+    if (flag_object[5] == 0) or (flag_object[7] == 0):
         ur5.go_to_joint(lst_joint_angles_1)
         movebase_client(way_points[7])
 
