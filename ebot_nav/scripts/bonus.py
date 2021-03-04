@@ -429,15 +429,16 @@ def main():
     sub2 = rospy.Subscriber('/camera/color/image_raw2', Image, callback=storeImage, queue_size=10)
 
     # print("Waiting for image")
-    # while True:
-    # try:
-    # image
-        #     break
-        # except:
-        #     continue
+    while True:
+        try:
+            image
+            break
+        except:
+            continue
     print("Launched Detectetion Object Window")
 
     sub1 = rospy.Subscriber('/objectsStamped', ObjectsStamped, callback=showDetectedObjects, queue_size=10)
+
 
     way_points = [
                 (3.6, 0.85,0,1), #0  enter the hallway point
