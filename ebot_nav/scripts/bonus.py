@@ -426,18 +426,19 @@ def main():
     global flag_object
     ur5 = Ur5Moveit()
 
+    sub1 = rospy.Subscriber('/objectsStamped', ObjectsStamped, callback=showDetectedObjects, queue_size=10)
     sub2 = rospy.Subscriber('/camera/color/image_raw2', Image, callback=storeImage, queue_size=10)
 
     # print("Waiting for image")
-    while True:
-        try:
-            image
-            break
-        except:
-            continue
+    # while True:
+    #     try:
+    #         image
+    #         break
+    #     except:
+    #         continue
     print("Launched Detectetion Object Window")
+    flag_object = np.ones(8)
 
-    sub1 = rospy.Subscriber('/objectsStamped', ObjectsStamped, callback=showDetectedObjects, queue_size=10)
 
 
     way_points = [
@@ -492,7 +493,7 @@ def main():
                 #### The out point when we dont go to drop box #######
                 ( 8.6, 2.175, -0.7068, 0.7073),      #33   Meeting Intermediate out CV
 
-                (9.20,4.89,0.999,0.0359),            # 34 meeting room enter first intermediate
+                (9.20,4.8,0.999,0.0359),            # 34 meeting room enter first intermediate
                 (5.6, 4.95 , 0.999, -0.005),          # 35 meeting pickup
                 (4.3376, 4.80 , 0.894,-0.4463),      # 36 meeting room intermediate from pickup
                 (4.115,2.6211,0.034, -0.9994),      # 37intermediate facing drop box
@@ -527,7 +528,7 @@ def main():
     states=[[0, -0.37, -0.785, -1, -0.52, 1.57], [0.56, -0.37, -0.785, -1, -0.65, 1.57]]
     for state in states:
         ur5.go_to_joint(state)
-        input("wait:   ")
+        # input("wait:   ")
         object_ids, object_tranforms  = findObjects()
         if object_ids[3]!=-1:
             x, y, z, rot, close_val = -0.07, -0.18, 0.20, -0.3, 0.45
@@ -537,7 +538,7 @@ def main():
                 x, y, z, rot, close_val = 0.17, -0.05, 0.21, 1.2, 0.49
             elif object_ids[3]==126:
                 x, y, z, rot, close_val = -0.005, -0.18, 0.21, 0, 0.43
-            input("wait:   ")
+            # input("wait:   ")
             ur5_pose_1 = geometry_msgs.msg.Pose()
             trans = object_tranforms[3][0]
             ur5_pose_1.position.x = trans[0]+x
@@ -555,9 +556,9 @@ def main():
             ur5.closeGripper(close_val)
 
             ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
-            input("wait:   ")
+            # input("wait:   ")
             ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.55, 1.57])
-            input("wait:   ")
+            # input("wait:   ")
             print(str(names[3]) + " Picked")
             ur5.go_to_joint(lst_joint_angles_2)
             movebase_client(way_points[20])
@@ -597,7 +598,7 @@ def main():
                 ur5.closeGripper(close_val)
                 # ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
                 ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
-                print(str(names[2])+ " Picked")
+                print(str(names[3])+ " Picked")
 
                 ur5.go_to_joint(lst_joint_angles_2)
                 movebase_client(way_points[22])
@@ -606,12 +607,12 @@ def main():
     if(object_ids[3]==-1):
         ur5.go_to_joint(lst_joint_angles_1)
         movebase_client(way_points[22])
+    flag_object = np.ones(8)
 
     for i in range(30,33):
         movebase_client(way_points[i])
 
     print("Research Lab Reached")
-    flag_object = np.ones(8)
 
     state=[-0.2, 0.23, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
@@ -668,6 +669,7 @@ def main():
     for i in range(8,10):
         movebase_client(way_points[i])
 
+    flag_object = np.ones(8)
     movebase_client(way_points[10])
     movebase_client(way_points[11])
 
@@ -683,8 +685,8 @@ def main():
     for i in range(len(states)):
         ur5.go_to_joint(states[i])
         object_ids, object_tranforms  = findObjects()
-        print(object_ids)
-        print(object_tranforms)
+        # print(object_ids)
+        # print(object_tranforms)
         # print("Adding deteced objects in rviz")
         # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
         # print("Done")
@@ -695,7 +697,7 @@ def main():
             ur5_pose_1 = geometry_msgs.msg.Pose()
             trans = object_tranforms[4][0]
             x, y, z = 0.007, - 0.3, + 0.2
-            input('wait: ')
+            # input('wait: ')
             # x = float(input("Enter x: "))
             # y = float(input("Enter y: "))
             # z = float(input("Enter z: "))
@@ -716,8 +718,9 @@ def main():
             ur5_pose_1.position.z = trans[2]+z-0.075
             ur5.go_to_pose(ur5_pose_1)
 
-            ur5.closeGripper(0.318)
+            ur5.closeGripper(0.32)
             ur5.go_to_joint(states[i])
+            print(str(names[4]) + " Picked")
             # remove_detected_objects_mesh_in_rviz(object_ids)
             break
 
@@ -735,7 +738,7 @@ def main():
     ur5.go_to_joint(state)
 
     #dropping the glue can
-    print("Opening gripper")
+    # print("Opening gripper")
     ur5.openGripper()
 
     print(str(names[4]) + " Dropped in Dropbox 2")
@@ -746,7 +749,7 @@ def main():
     ur5.go_to_joint(lst_joint_angles_1)
 
     movebase_client(way_points[11])
-    movebase_client(way_points[34])
+    # movebase_client(way_points[34])
     movebase_client(way_points[35])
 
     #################################### Adhesive ##################################
@@ -786,12 +789,11 @@ def main():
     movebase_client(way_points[15])
 
     ############################### Conference room #############################
-
+    flag_object = np.ones(8)
     for i in range(24,26):
         movebase_client(way_points[i])
 
     print("Conference Room Reached")
-    flag_object = np.zeros(8)
 
     state=[0, 0, -0.8, 0, 1.36, 0]
 
