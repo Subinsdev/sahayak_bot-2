@@ -263,14 +263,14 @@ def findObjects():
     obj_name = '/object_'
     start_time = time.time()
     end_time = time.time()
-    object_ids = [[59, 71, 78, 89, 97, 99, 106, 108, 120, 127, 128, 133, 137, 139],               #Wheels
-                    [57, 74, 76, 82, 104, 107, 121, 129, 135, 136],                     #EYFI
-                    [55, 70, 73, 75, 83, 88, 105, 118, 124, 130],                  #FPGA
-                    [41, 56, 61, 63, 80, 98, 101, 102, 103, 113, 114, 117, 123, 125, 126,140],   #Battery
-                    [43, 58, 64, 85, 93, 96, 110, 115, 116, 119, 122, 132, 134, 138],                  #Glue
-                    [44, 68, 69, 84, 87, 90],                       #Coke
-                    [42, 62, 72, 81, 86, 92, 95, 100, 109, 111, 112, 131], #Adhesive
-                [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]           #Glass
+    object_ids = [[59, 71, 78, 89, 97, 99, 106, 108, 120, 127, 128, 133, 137, 139],                 #Wheels
+                    [57, 74, 76, 82, 104, 107, 121, 129, 135, 136,143],                             #EYFI
+                    [55, 70, 73, 75, 83, 88, 105, 118, 124, 130,141],                               #FPGA
+                    [41, 56, 61, 63, 80, 98, 101, 102, 103, 113, 114, 117, 123, 125, 126,140,142],  #Battery
+                    [43, 58, 64, 85, 93, 96, 110, 115, 116, 119, 122, 132, 134, 138,144],           #Glue
+                    [44, 68, 69, 84, 87, 90],                                                       #Coke
+                    [42, 62, 72, 81, 86, 92, 95, 100, 109, 111, 112, 131],                          #Adhesive
+                [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]                                           #Glass
 
     while end_time-start_time < 2:
         for i in range(len(object_ids)):
@@ -375,15 +375,14 @@ def showDetectedObjects(msg):
     data = msg.objects.data
     global flag_object
     detected_objects_image = image.copy()
-    object_ids = [[59, 71, 78, 89, 97, 99, 106, 108, 120, 127, 128, 133, 137, 139],               #Wheels
-                    [57, 74, 76, 82, 104, 107, 121, 129, 135, 136],                     #EYFI
-                    [55, 70, 73, 75, 83, 88, 105, 118, 124, 130],                  #FPGA
-                    [41, 56, 61, 63, 80, 98, 101, 102, 103, 113, 114, 117, 123, 125, 126,140],   #Battery
-                    [43, 58, 64, 85, 93, 96, 110, 115, 116, 119, 122, 132, 134, 138],                  #Glue
-                    [44, 68, 69, 84, 87, 90],                       #Coke
-                    [42, 62, 72, 81, 86, 92, 95, 100, 109, 111, 112, 131], #Adhesive
-                    [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]           #Glass
-
+    object_ids = [[59, 71, 78, 89, 97, 99, 106, 108, 120, 127, 128, 133, 137, 139],                 #Wheels
+                    [57, 74, 76, 82, 104, 107, 121, 129, 135, 136,143],                             #EYFI
+                    [55, 70, 73, 75, 83, 88, 105, 118, 124, 130,141],                               #FPGA
+                    [41, 56, 61, 63, 80, 98, 101, 102, 103, 113, 114, 117, 123, 125, 126,140,142],  #Battery
+                    [43, 58, 64, 85, 93, 96, 110, 115, 116, 119, 122, 132, 134, 138,144],           #Glue
+                    [44, 68, 69, 84, 87, 90],                                                       #Coke
+                    [42, 62, 72, 81, 86, 92, 95, 100, 109, 111, 112, 131],                          #Adhesive
+                [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]                                           #Glass
     detected = {}
     for i in range(0, len(data), 12):
         idx = int(data[i])
@@ -580,28 +579,28 @@ def main():
                 elif object_ids[3]==114:
                     x, y, z, close_val = 0.005, -0.18, 0.21, 0.3
 
-            ur5_pose_1 = geometry_msgs.msg.Pose()
-            trans = object_tranforms[3][0]
-            ur5_pose_1.position.x = trans[0]+x
-            ur5_pose_1.position.y = trans[1]+y
-            ur5_pose_1.position.z = trans[2]+z
-            angles = quaternion_from_euler(3.8, 0, -3.14)
-            ur5_pose_1.orientation.x = angles[0]
-            ur5_pose_1.orientation.y = angles[1]
-            ur5_pose_1.orientation.z = angles[2]
-            ur5_pose_1.orientation.w = angles[3]
-            ur5.go_to_pose(ur5_pose_1)
+                ur5_pose_1 = geometry_msgs.msg.Pose()
+                trans = object_tranforms[3][0]
+                ur5_pose_1.position.x = trans[0]+x
+                ur5_pose_1.position.y = trans[1]+y
+                ur5_pose_1.position.z = trans[2]+z
+                angles = quaternion_from_euler(3.8, 0, -3.14)
+                ur5_pose_1.orientation.x = angles[0]
+                ur5_pose_1.orientation.y = angles[1]
+                ur5_pose_1.orientation.z = angles[2]
+                ur5_pose_1.orientation.w = angles[3]
+                ur5.go_to_pose(ur5_pose_1)
 
-            ur5_pose_1.position.z = trans[2]+0.155
-            ur5.go_to_pose(ur5_pose_1)
-            ur5.closeGripper(close_val)
-            # ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
-            ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
-            print(str(names[2])+ " Picked")
+                ur5_pose_1.position.z = trans[2]+0.155
+                ur5.go_to_pose(ur5_pose_1)
+                ur5.closeGripper(close_val)
+                # ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
+                ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
+                print(str(names[2])+ " Picked")
 
-            ur5.go_to_joint(lst_joint_angles_2)
-            movebase_client(way_points[22])
-            break
+                ur5.go_to_joint(lst_joint_angles_2)
+                movebase_client(way_points[22])
+                break
 
     if(object_ids[3]==-1):
         ur5.go_to_joint(lst_joint_angles_1)
@@ -734,9 +733,11 @@ def main():
     state=[1.13, 0.4, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
 
-    #dropping the coke can
+    #dropping the glue can
     print("Opening gripper")
     ur5.openGripper()
+
+    print(str(names[4]) + " Dropped in Dropbox 2")
 
     state=[-0.2, 0.23, -1.12, 0, 1.36, 0]
     ur5.go_to_joint(state)
