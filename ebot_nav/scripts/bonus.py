@@ -684,13 +684,13 @@ def main():
         object_ids, object_tranforms  = findObjects()
         print(object_ids)
         print(object_tranforms)
-        print("Adding deteced objects in rviz")
+        # print("Adding deteced objects in rviz")
         # add_dected_objects_mesh_in_rviz(ur5, object_ids, object_tranforms)
-        print("Done")
+        # print("Done")
         z=0
         if object_ids[4]!=-1:
             # while not rospy.is_shutdown():
-            print("Found object_", object_ids[4])
+            # print("Found object_", object_ids[4])
             ur5_pose_1 = geometry_msgs.msg.Pose()
             trans = object_tranforms[4][0]
             x, y, z = 0.007, - 0.3, + 0.2
@@ -800,7 +800,7 @@ def main():
     ur5.go_to_joint(state)
 
     ur5.openGripper()
-    print(str(names[5]) + " Dropped in Dropbox 1")
+    print(str(names[6]) + " Dropped in Dropbox 1")
 
     state=[0, 0, -0.8, 0, 0, 0]
     ur5.go_to_joint(state)
