@@ -516,14 +516,14 @@ def main():
     print("Store Room Reached")
     flag_object = np.zeros(8)
 
-    #################################### Battery ##################################
-    ############################ Looking Left Side  ############################
+    #### There are 2 states to see the full range of the battery spawn and the other objects ####
     states=[[0, -0.37, -0.785, -1, -0.52, 1.57], [0.56, -0.37, -0.785, -1, -0.65, 1.57]]
     for state in states:
         ur5.go_to_joint(state)
         object_ids, object_tranforms  = findObjects()
+        # print("Adding deteced objects in rviz")
         if object_ids[3]!=-1:
-            x, y, z, rot. close_val = -0.07, -0.18, 0.20, -0.3, 0.45
+           x, y, z, rot, close_val = -0.07, -0.18, 0.20, -0.3, 0.45
             if object_ids[3]==117:
                 x, y, z, rot = 0.005, -0.18, 0.19, 0
             elif object_ids[3]==125:
@@ -545,25 +545,23 @@ def main():
 
             ur5_pose_1.position.z = trans[2]+0.155
             ur5.go_to_pose(ur5_pose_1)
-            ur5.closeGripper(close_val)
-
+            ur5.closeGripper(0.45)
             ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
-            ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.55, 1.57])
+            ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
             print(str(names[3]) + " Picked")
             ur5.go_to_joint(lst_joint_angles_2)
             movebase_client(way_points[20])
             break
 
+    #################  RIGHT SIDE  ##################
     if object_ids[3]==-1:
         ur5.go_to_joint(lst_joint_angles_2)
         movebase_client(way_points[21])
 
-        #################RIGHT SIDE##################
         states=[[0, -0.37, -0.885, -1, -0.7, 1.57]]
         for state in states:
             ur5.go_to_joint(state)
             object_ids, object_tranforms  = findObjects()
-
             if object_ids[3]!=-1:
                 x, y, z, close_val = -0.005, -0.18, 0.21, 0.43
                 if object_ids[3]==103:
@@ -576,7 +574,7 @@ def main():
                 ur5_pose_1.position.x = trans[0]+x
                 ur5_pose_1.position.y = trans[1]+y
                 ur5_pose_1.position.z = trans[2]+z
-                angles = quaternion_from_euler(3.8, 0, -3.14+rot)
+                angles = quaternion_from_euler(3.8, 0, -3.14)
                 ur5_pose_1.orientation.x = angles[0]
                 ur5_pose_1.orientation.y = angles[1]
                 ur5_pose_1.orientation.z = angles[2]
@@ -585,14 +583,14 @@ def main():
 
                 ur5_pose_1.position.z = trans[2]+0.155
                 ur5.go_to_pose(ur5_pose_1)
-                ur5.closeGripper(close_val)
-                ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
+                ur5.closeGripper(0.45)
+                # ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
                 ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
-                print(str(names[2])+ " Picked")
-
+                print(str(names[3])+ " Picked")
                 ur5.go_to_joint(lst_joint_angles_2)
                 movebase_client(way_points[22])
                 break
+
 
     if(object_ids[3]!=-1):
         ur5.go_to_joint(lst_joint_angles_1)
