@@ -108,32 +108,33 @@ class Ur5Moveit:
     def go_to_pose(self, arg_pose):
 
         pose_values = self._group.get_current_pose().pose
-        rospy.loginfo('\033[94m' + ">>> Current Pose:" + '\033[0m')
-        rospy.loginfo(pose_values)
+        # rospy.loginfo('\033[94m' + ">>> Current Pose:" + '\033[0m')
+        # rospy.loginfo(pose_values)
 
         angles = euler_from_quaternion([pose_values.orientation.x, pose_values.orientation.y,pose_values.orientation.z,pose_values.orientation.w])
-        print("CURRENT ANGLE")
-        rospy.loginfo(angles)
+        # print("CURRENT ANGLE")
+        # rospy.loginfo(angles)
 
         self._group.set_pose_target(arg_pose)
         flag_plan = self._group.go(wait=True)  # wait=False for Async Move
 
         pose_values = self._group.get_current_pose().pose
-        rospy.loginfo('\033[94m' + ">>> Final Pose:" + '\033[0m')
-        rospy.loginfo(pose_values)
+        # rospy.loginfo('\033[94m' + ">>> Final Pose:" + '\033[0m')
+        # rospy.loginfo(pose_values)
 
         list_joint_values = self._group.get_current_joint_values()
-        rospy.loginfo('\033[94m' + ">>> Final Joint Values:" + '\033[0m')
-        rospy.loginfo(list_joint_values)
-
-        if (flag_plan == True):
-            rospy.loginfo(
-                '\033[94m' + ">>> go_to_pose() Success" + '\033[0m')
-        else:
-            rospy.logerr(
-                '\033[94m' + ">>> go_to_pose() Failed. Solution for Pose not Found." + '\033[0m')
+        # rospy.loginfo('\033[94m' + ">>> Final Joint Values:" + '\033[0m')
+        # rospy.loginfo(list_joint_values)
+        #
+        # if (flag_plan == True):
+        #     rospy.loginfo(
+        #         '\033[94m' + ">>> go_to_pose() Success" + '\033[0m')
+        # else:
+        #     rospy.logerr(
+        #         '\033[94m' + ">>> go_to_pose() Failed. Solution for Pose not Found." + '\033[0m')
 
         return flag_plan
+
     def add_box(self, name, pose, size = (0.1, 0.1, 0.1)):
         """
         Add a box to the planning scene
@@ -219,8 +220,8 @@ class Ur5Moveit:
     # Destructor
     def __del__(self):
         moveit_commander.roscpp_shutdown()
-        rospy.loginfo(
-            '\033[94m' + "Object of class Ur5Moveit Deleted." + '\033[0m')
+        # rospy.loginfo(
+        #     '\033[94m' + "Object of class Ur5Moveit Deleted." + '\033[0m')
 
     def remove_world_obj(self, name = None):
         co =  CollisionObject()
@@ -265,7 +266,7 @@ def findObjects():
     object_ids = [[59, 71, 78, 89, 97, 99, 106, 108, 120, 127, 128, 133, 137, 139],               #Wheels
                     [57, 74, 76, 82, 104, 107, 121, 129, 135, 136],                     #EYFI
                     [55, 70, 73, 75, 83, 88, 105, 118, 124, 130],                  #FPGA
-                    [41, 56, 61, 63, 80, 98, 101, 102, 103, 113, 114, 117, 123, 125, 126],   #Battery
+                    [41, 56, 61, 63, 80, 98, 101, 102, 103, 113, 114, 117, 123, 125, 126,140],   #Battery
                     [43, 58, 64, 85, 93, 96, 110, 115, 116, 119, 122, 132, 134, 138],                  #Glue
                     [44, 68, 69, 84, 87, 90],                       #Coke
                     [42, 62, 72, 81, 86, 92, 95, 100, 109, 111, 112, 131], #Adhesive
@@ -377,7 +378,7 @@ def showDetectedObjects(msg):
     object_ids = [[59, 71, 78, 89, 97, 99, 106, 108, 120, 127, 128, 133, 137, 139],               #Wheels
                     [57, 74, 76, 82, 104, 107, 121, 129, 135, 136],                     #EYFI
                     [55, 70, 73, 75, 83, 88, 105, 118, 124, 130],                  #FPGA
-                    [41, 56, 61, 63, 80, 98, 101, 102, 103, 113, 114, 117, 123, 125, 126],   #Battery
+                    [41, 56, 61, 63, 80, 98, 101, 102, 103, 113, 114, 117, 123, 125, 126,140],   #Battery
                     [43, 58, 64, 85, 93, 96, 110, 115, 116, 119, 122, 132, 134, 138],                  #Glue
                     [44, 68, 69, 84, 87, 90],                       #Coke
                     [42, 62, 72, 81, 86, 92, 95, 100, 109, 111, 112, 131], #Adhesive
@@ -429,12 +430,12 @@ def main():
     sub2 = rospy.Subscriber('/camera/color/image_raw2', Image, callback=storeImage, queue_size=10)
 
     # print("Waiting for image")
-    while True:
-        try:
-            image
-            break
-        except:
-            continue
+    # while True:
+    # try:
+    # image
+        #     break
+        # except:
+        #     continue
     print("Launched Detectetion Object Window")
 
     sub1 = rospy.Subscriber('/objectsStamped', ObjectsStamped, callback=showDetectedObjects, queue_size=10)
@@ -526,6 +527,7 @@ def main():
     states=[[0, -0.37, -0.785, -1, -0.52, 1.57], [0.56, -0.37, -0.785, -1, -0.65, 1.57]]
     for state in states:
         ur5.go_to_joint(state)
+        input("wait:   ")
         object_ids, object_tranforms  = findObjects()
         if object_ids[3]!=-1:
             x, y, z, rot, close_val = -0.07, -0.18, 0.20, -0.3, 0.45
@@ -535,7 +537,7 @@ def main():
                 x, y, z, rot, close_val = 0.17, -0.05, 0.21, 1.2, 0.49
             elif object_ids[3]==126:
                 x, y, z, rot, close_val = -0.005, -0.18, 0.21, 0, 0.43
-
+            input("wait:   ")
             ur5_pose_1 = geometry_msgs.msg.Pose()
             trans = object_tranforms[3][0]
             ur5_pose_1.position.x = trans[0]+x
@@ -553,7 +555,9 @@ def main():
             ur5.closeGripper(close_val)
 
             ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
+            input("wait:   ")
             ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.55, 1.57])
+            input("wait:   ")
             print(str(names[3]) + " Picked")
             ur5.go_to_joint(lst_joint_angles_2)
             movebase_client(way_points[20])
@@ -576,30 +580,30 @@ def main():
                 elif object_ids[3]==114:
                     x, y, z, close_val = 0.005, -0.18, 0.21, 0.3
 
-                ur5_pose_1 = geometry_msgs.msg.Pose()
-                trans = object_tranforms[3][0]
-                ur5_pose_1.position.x = trans[0]+x
-                ur5_pose_1.position.y = trans[1]+y
-                ur5_pose_1.position.z = trans[2]+z
-                angles = quaternion_from_euler(3.8, 0, -3.14)
-                ur5_pose_1.orientation.x = angles[0]
-                ur5_pose_1.orientation.y = angles[1]
-                ur5_pose_1.orientation.z = angles[2]
-                ur5_pose_1.orientation.w = angles[3]
-                ur5.go_to_pose(ur5_pose_1)
+            ur5_pose_1 = geometry_msgs.msg.Pose()
+            trans = object_tranforms[3][0]
+            ur5_pose_1.position.x = trans[0]+x
+            ur5_pose_1.position.y = trans[1]+y
+            ur5_pose_1.position.z = trans[2]+z
+            angles = quaternion_from_euler(3.8, 0, -3.14)
+            ur5_pose_1.orientation.x = angles[0]
+            ur5_pose_1.orientation.y = angles[1]
+            ur5_pose_1.orientation.z = angles[2]
+            ur5_pose_1.orientation.w = angles[3]
+            ur5.go_to_pose(ur5_pose_1)
 
-                ur5_pose_1.position.z = trans[2]+0.155
-                ur5.go_to_pose(ur5_pose_1)
-                ur5.closeGripper(close_val)
-                ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
-                ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
-                print(str(names[2])+ " Picked")
+            ur5_pose_1.position.z = trans[2]+0.155
+            ur5.go_to_pose(ur5_pose_1)
+            ur5.closeGripper(close_val)
+            # ur5.go_to_joint([0.5, -0.37, -0.785, -1, -0.65, 1.57])
+            ur5.go_to_joint([-0.5, -0.37, -0.785, -1, -0.65, 1.57])
+            print(str(names[2])+ " Picked")
 
-                ur5.go_to_joint(lst_joint_angles_2)
-                movebase_client(way_points[22])
-                break
+            ur5.go_to_joint(lst_joint_angles_2)
+            movebase_client(way_points[22])
+            break
 
-    if(object_ids[3]!=-1):
+    if(object_ids[3]==-1):
         ur5.go_to_joint(lst_joint_angles_1)
         movebase_client(way_points[22])
 
@@ -636,27 +640,27 @@ def main():
     states=[[-0.05, -0.37, -0.785, -1, -0.8, 1.57]]
     for i in range(len(states)):
         ur5.go_to_joint(states[i])
-        object_ids, object_tranforms  = findObjects()
+        # object_ids, object_tranforms  = findObjects()
         z=0
 
     ############# This goes to the next table in the pantry ##########
     ur5.go_to_joint(lst_joint_angles_1)
 
-    if (object_ids[5] == -1) or (object_ids[7] == -1):
+    if (flag_object[5] == -1) or (flag_object[7] == -1):
         ur5.go_to_joint(lst_joint_angles_1)
         movebase_client(way_points[5])
         movebase_client(way_points[6])
         states=[[-0.07, -0.27, -0.785, -1, -0.8, 1.57]]
         for i in range(len(states)):
             ur5.go_to_joint(states[i])
-            object_ids, object_tranforms  = findObjects()
+            # object_ids, object_tranforms  = findObjects()
             z=0
-            if object_ids[5]!=-1:
+            if flag_object[5]!=-1:
                 ur5.go_to_joint(lst_joint_angles_1)
                 movebase_client(way_points[7])
                 break
 
-    if (object_ids[5] == -1) or (object_ids[7] == -1):
+    if (flag_object[5] == -1) or (flag_object[7] == -1):
         ur5.go_to_joint(lst_joint_angles_1)
         movebase_client(way_points[7])
 
@@ -691,6 +695,7 @@ def main():
             ur5_pose_1 = geometry_msgs.msg.Pose()
             trans = object_tranforms[4][0]
             x, y, z = 0.007, - 0.3, + 0.2
+            input('wait: ')
             # x = float(input("Enter x: "))
             # y = float(input("Enter y: "))
             # z = float(input("Enter z: "))
@@ -711,7 +716,7 @@ def main():
             ur5_pose_1.position.z = trans[2]+z-0.075
             ur5.go_to_pose(ur5_pose_1)
 
-            ur5.closeGripper(0.315)
+            ur5.closeGripper(0.318)
             ur5.go_to_joint(states[i])
             # remove_detected_objects_mesh_in_rviz(object_ids)
             break
