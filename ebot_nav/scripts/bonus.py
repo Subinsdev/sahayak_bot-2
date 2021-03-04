@@ -592,7 +592,7 @@ def main():
                 break
 
 
-    if(object_ids[3]!=-1):
+    if(object_ids[3]==-1):
         ur5.go_to_joint(lst_joint_angles_1)
         movebase_client(way_points[22])
         
