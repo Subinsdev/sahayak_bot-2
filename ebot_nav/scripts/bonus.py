@@ -261,14 +261,17 @@ def findObjects():
     rate = rospy.Rate(20.0)
     obj_name = '/object_'
     start_time = time.time()
-    object_ids = [[108, 127, 128, 133, 137, 139],               #Wheels
-                    [74, 129, 135, 136],                     #EYFI
-                    [55, 105, 118, 124, 130],                  #FPGA
-                    [103, 114, 117, 123, 125, 126],   #Battery
+    end_time = time.time()
+    object_ids = [[59, 71, 78, 89, 97, 99, 106, 108, 120, 127, 128, 133, 137, 139],               #Wheels
+                    [57, 74, 76, 82, 104, 107, 121, 129, 135, 136],                     #EYFI
+                    [55, 70, 73, 75, 83, 88, 105, 118, 124, 130],                  #FPGA
+                    [41, 56, 61, 63, 80, 98, 101, 102, 103, 113, 114, 117, 123, 125, 126],   #Battery
                     [43, 58, 64, 85, 93, 96, 110, 115, 116, 119, 122, 132, 134, 138],                  #Glue
                     [44, 68, 69, 84, 87, 90],                       #Coke
                     [42, 62, 72, 81, 86, 92, 95, 100, 109, 111, 112, 131], #Adhesive
-                    [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]           #Glass    while end_time-start_time < 2:
+                [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]           #Glass
+
+    while end_time-start_time < 2:
         for i in range(len(object_ids)):
             for j in range(len(object_ids[i])):
                 obj_id = obj_name + str(object_ids[i][j])
@@ -371,14 +374,16 @@ def showDetectedObjects(msg):
     data = msg.objects.data
     global flag_object
     detected_objects_image = image.copy()
-    object_ids = [[108, 127, 128, 133, 137, 139],               #Wheels
-                    [74, 129, 135, 136],                     #EYFI
-                    [55, 105, 118, 124, 130],                  #FPGA
-                    [103, 114, 117, 123, 125, 126],   #Battery
+    object_ids = [[59, 71, 78, 89, 97, 99, 106, 108, 120, 127, 128, 133, 137, 139],               #Wheels
+                    [57, 74, 76, 82, 104, 107, 121, 129, 135, 136],                     #EYFI
+                    [55, 70, 73, 75, 83, 88, 105, 118, 124, 130],                  #FPGA
+                    [41, 56, 61, 63, 80, 98, 101, 102, 103, 113, 114, 117, 123, 125, 126],   #Battery
                     [43, 58, 64, 85, 93, 96, 110, 115, 116, 119, 122, 132, 134, 138],                  #Glue
                     [44, 68, 69, 84, 87, 90],                       #Coke
                     [42, 62, 72, 81, 86, 92, 95, 100, 109, 111, 112, 131], #Adhesive
-                    [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]           #Glass    detected = {}
+                    [45, 48, 49, 50, 51, 52, 53, 66, 67, 91]]           #Glass
+
+    detected = {}
     for i in range(0, len(data), 12):
         idx = int(data[i])
         w = data[i+1]
@@ -523,7 +528,7 @@ def main():
         ur5.go_to_joint(state)
         object_ids, object_tranforms  = findObjects()
         if object_ids[3]!=-1:
-            x, y, z, rot. close_val = -0.07, -0.18, 0.20, -0.3, 0.45
+            x, y, z, rot, close_val = -0.07, -0.18, 0.20, -0.3, 0.45
             if object_ids[3]==117:
                 x, y, z, rot = 0.005, -0.18, 0.19, 0
             elif object_ids[3]==125:
@@ -555,7 +560,7 @@ def main():
             break
 
     if object_ids[3]==-1:
-        ur5.go_to_joint(lst_joint_angles_2)
+        ur5.go_to_joint(lst_joint_angles_1)
         movebase_client(way_points[21])
 
         #################RIGHT SIDE##################
@@ -576,7 +581,7 @@ def main():
                 ur5_pose_1.position.x = trans[0]+x
                 ur5_pose_1.position.y = trans[1]+y
                 ur5_pose_1.position.z = trans[2]+z
-                angles = quaternion_from_euler(3.8, 0, -3.14+rot)
+                angles = quaternion_from_euler(3.8, 0, -3.14)
                 ur5_pose_1.orientation.x = angles[0]
                 ur5_pose_1.orientation.y = angles[1]
                 ur5_pose_1.orientation.z = angles[2]
@@ -597,7 +602,7 @@ def main():
     if(object_ids[3]!=-1):
         ur5.go_to_joint(lst_joint_angles_1)
         movebase_client(way_points[22])
-        
+
     for i in range(30,33):
         movebase_client(way_points[i])
 
