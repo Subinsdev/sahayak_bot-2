@@ -16,8 +16,8 @@ TrajectoryPlannerROS:
   holonomic_robot: false
 
   path_distance_bias: 0.75            #default .6
-  goal_distance_bias: 0.6             #default .8
-  occdist_scale: 0.2                 #default 0.01
+  goal_distance_bias: 0.4             #default .8
+  occdist_scale: 0.2                  #default 0.01
 
   heading_lookahead: 0.425            #default 0.325m
   heading_scoring: false              #default false

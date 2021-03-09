@@ -9,8 +9,6 @@ import geometry_msgs.msg
 import actionlib
 import math
 import tf
-from tf.transformations import euler_from_quaternion
-from tf.transformations import quaternion_from_euler
 import time
 from moveit_msgs.msg import CollisionObject, AttachedCollisionObject
 from moveit_ros_planning_interface import _moveit_planning_scene_interface

@@ -493,7 +493,7 @@ def main():
                 #### The out point when we dont go to drop box #######
                 ( 8.6, 2.175, -0.7068, 0.7073),      #33   Meeting Intermediate out CV
 
-                (9.20,4.8,0.999,0.0359),            # 34 meeting room enter first intermediate
+                (9.20,4.89,0.999,0.0359),            # 34 meeting room enter first intermediate
                 (5.6, 4.95 , 0.999, -0.005),          # 35 meeting pickup
                 (4.3376, 4.80 , 0.894,-0.4463),      # 36 meeting room intermediate from pickup
                 (4.115,2.6211,0.034, -0.9994),      # 37intermediate facing drop box
@@ -676,7 +676,7 @@ def main():
     print("Meeting Room Reached")
     flag_object = np.zeros(8)
 
-    movebase_client(way_points[34])
+    # movebase_client(way_points[34])
     movebase_client(way_points[35])
 
     #Picking up glue
@@ -749,7 +749,7 @@ def main():
     ur5.go_to_joint(lst_joint_angles_1)
 
     movebase_client(way_points[11])
-    # movebase_client(way_points[34])
+    movebase_client(way_points[34])
     movebase_client(way_points[35])
 
     #################################### Adhesive ##################################
@@ -813,7 +813,7 @@ def main():
     movebase_client(way_points[26])
     movebase_client(way_points[27])
     movebase_client(way_points[28])
-    movebase_client(way_points[-1])
+    movebase_client(way_points[38])
 
     cv2.destroyAllWindows()
     print("Mission Accomplished!")
